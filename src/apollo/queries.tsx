@@ -10,5 +10,6 @@ export const projects = `query FetchProjects {
   projects {
     id
     name
+    key
   }
 }`;

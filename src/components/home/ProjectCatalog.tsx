@@ -18,9 +18,9 @@ const PROJECTS = gql`
 
 const ProjectCatalog = () => {
   const { data } = useQuery(AUTHED_USER);
-  const { loading, data: projects } = useQuery(PROJECTS);
-  console.log(data);
   const authUser = data?.currentUser
+  const { loading, data: projectsResponse } = useQuery(PROJECTS);
+  const projects = projectsResponse?.projects
   const [isOpen, setIsOpen] = useState(false);
 
   // if (error && (error as APIERROR).status === 401)

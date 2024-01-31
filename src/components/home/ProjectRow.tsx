@@ -17,11 +17,6 @@ const ProjectRow = (props: Props) => {
   const { data: publicUser } = usePublicUserQuery(userId);
   const [on, setOn] = useState(false);
   const navigate = useNavigate();
-
-  if (!members) return null;
-
-  const { isAdmin, id: memberId } = members.filter(({ userId: u }) => u === authUserId)[0];
-
   const handleDelete = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     e.stopPropagation();
     setOn(true);
@@ -39,7 +34,7 @@ const ProjectRow = (props: Props) => {
         <div className='min-w-[18rem] grow px-2'>{descr}</div>
         <div className='w-52 shrink-0 px-2'>
           {publicUser?.username}
-          {isAdmin ? <span className='ml-1 text-sm font-bold'>(you)</span> : ''}
+          {<span className='ml-1 text-sm font-bold'>(you)</span>}
         </div>
         <button
           title='Delete or Leave'
