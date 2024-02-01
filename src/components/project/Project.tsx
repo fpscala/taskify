@@ -7,11 +7,19 @@ import Board from './Board';
 import Filter from './Filter';
 import SS from '../util/SpinningCircle';
 import { useAppSelector } from '../../store/hooks';
+import { useQuery } from '@apollo/client';
+import gql from "graphql-tag";
+import { issues } from '../../apollo/queries';
+const ISSEUS = gql`
+  ${issues}
+`;
 
 const Project = () => {
   const projectId = Number(useParams().projectId);
   const issueQuery = useAppSelector((state) => state.query.issue);
-  const { data: lists, error: listError } = useListsQuery(projectId);
+  // const { data: lists, error: listError } = useListsQuery(projectId);
+  const { data } = useQuery(ISSEUS, {variables: {projectId: projectId}});
+  const lists = data?.issues.data
   const [isDragDisabled, setIsDragDisabled] = useState(false);
 
   const { data: issues, error: issueError } = useIssuesQuery(

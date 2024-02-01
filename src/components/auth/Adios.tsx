@@ -18,7 +18,7 @@ function Adios() {
   const [submitError, setSubmitError] = useState('');
   const navigate = useNavigate();
 
-  if (error && (error as APIERROR).status === 401) return <Navigate to='/login' />;
+  // if (error && (error as APIERROR).status === 401) return <Navigate to='/login' />;
 
   if (!authUser) return null;
 

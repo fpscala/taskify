@@ -13,3 +13,14 @@ export const projects = `query FetchProjects {
     key
   }
 }`;
+
+export const issues = `query FetchIssues($userId:ID, $projectId:ID, $sprintId:ID) {
+  issues(userId:$userId, projectId:$projectId, sprintId:$sprintId) {
+    data {
+      id
+      name
+      key
+      description
+    }
+  }
+}`;
