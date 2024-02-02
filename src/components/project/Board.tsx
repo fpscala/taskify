@@ -1,5 +1,6 @@
 import { Issue, IssueStatus } from "../../models/issues.interface";
 import { Droppable } from "react-beautiful-dnd";
+import { Issue as IssueColumn } from "../issues/Issue";
 
 interface Props {
   status: IssueStatus;
@@ -34,10 +35,9 @@ const Board: React.FC<Props> = ({ status, issues }) => {
             className=" min-h-[10px] h-fit"
           >
             {issues
-              .sort((a, b) => a.boardPosition - b.boardPosition)
+              .sort((a, b) => a.boardPosition! - b.boardPosition!)
               .map((issue, index) => (
-                // <Issue key={issue.id} index={index} issue={issue} />
-                <></>
+                <IssueColumn key={issue.id} index={index} issue={issue} />
               ))}
             {placeholder}
           </div>
