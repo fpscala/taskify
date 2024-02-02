@@ -1,13 +1,12 @@
 import { Icon } from "@iconify/react";
 import { useState } from "react";
-import { Navigate } from "react-router-dom";
-import { APIERROR } from "../../api/apiTypes";
 import gql from "graphql-tag";
 import SS from "../util/SpinningCircle";
 import CreateProjectModel from "./CreateProjectModel";
 import ProjectRow from "./ProjectRow";
 import { authed_user, projects } from "../../apollo/queries";
 import { useQuery } from "@apollo/client";
+import { Project } from "../../models/projects.interface";
 
 const AUTHED_USER = gql`
   ${authed_user}
@@ -18,13 +17,10 @@ const PROJECTS = gql`
 
 const ProjectCatalog = () => {
   const { data } = useQuery(AUTHED_USER);
-  const authUser = data?.currentUser
+  const authUser = data?.currentUser;
   const { loading, data: projectsResponse } = useQuery(PROJECTS);
-  const projects = projectsResponse?.projects
+  const projects = projectsResponse?.projects as Project[];
   const [isOpen, setIsOpen] = useState(false);
-
-  // if (error && (error as APIERROR).status === 401)
-  //   return <Navigate to="/login" />;
 
   if (!authUser || loading)
     return (
@@ -43,7 +39,7 @@ const ProjectCatalog = () => {
   return (
     <>
       <div className="z-10 h-screen min-h-fit grow overflow-auto bg-c-1 px-10 pb-10 pt-12 text-c-5">
-        <div className="flex min-w-[43rem] justify-between">
+        <div className="min-w-[43rem] flex justify-between">
           <span className="text-2xl font-semibold tracking-wide">Projects</span>
           <button onClick={() => setIsOpen(true)} className="btn">
             Create Project
@@ -53,12 +49,12 @@ const ProjectCatalog = () => {
           <div className="relative">
             <input
               placeholder="Search projects"
-              className="w-44 rounded-sm border-2 bg-transparent py-[5px] pl-9 pr-2 text-sm outline-none focus:border-chakra-blue"
+              className="py-[5px] w-44 rounded-sm border-2 bg-transparent pl-9 pr-2 text-sm outline-none focus:border-chakra-blue"
             />
             <Icon
               width={20}
               icon="ant-design:search-outlined"
-              className="absolute left-2 top-[6px] w-[19px]"
+              className="top-[6px] w-[19px] absolute left-2"
             />
           </div>
         </div>
@@ -72,13 +68,8 @@ const ProjectCatalog = () => {
           {projects ? (
             projects.length !== 0 ? (
               <div className="mt-1 border-t-2 border-c-3">
-                {projects.map((data, i) => (
-                  <ProjectRow
-                    key={data.id}
-                    idx={i}
-                    authUserId={authUser.id}
-                    {...data}
-                  />
+                {projects.map((project, i) => (
+                  <ProjectRow key={project.id} idx={i} project={project} />
                 ))}
               </div>
             ) : (

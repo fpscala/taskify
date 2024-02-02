@@ -1,55 +1,51 @@
-import { useState } from 'react';
-import { Navigate, useParams } from 'react-router-dom';
-import { useIssuesQuery } from '../../api/endpoints/issues.endpoint';
-import { useListsQuery } from '../../api/endpoints/lists.endpoint';
-import type { APIERROR } from '../../api/apiTypes';
-import Board from './Board';
-import Filter from './Filter';
-import SS from '../util/SpinningCircle';
-import { useAppSelector } from '../../store/hooks';
-import { useQuery } from '@apollo/client';
+import { useParams } from "react-router-dom";
+
+import { useQuery } from "@apollo/client";
 import gql from "graphql-tag";
-import { issues } from '../../apollo/queries';
+import { issues } from "../../apollo/queries";
+import { IssueStatus } from "../../models/issues.interface";
+import Board from "./Board";
+import { DragDropContext } from "react-beautiful-dnd";
+import { useLayoutEffect, useRef } from "react";
 const ISSEUS = gql`
   ${issues}
 `;
-
+const STATUSES: IssueStatus[] = [
+  IssueStatus.TODO,
+  IssueStatus.IN_PROGRESS,
+  IssueStatus.DONE,
+];
 const Project = () => {
-  const projectId = Number(useParams().projectId);
-  const issueQuery = useAppSelector((state) => state.query.issue);
-  // const { data: lists, error: listError } = useListsQuery(projectId);
-  const { data } = useQuery(ISSEUS, {variables: {projectId: projectId}});
-  const lists = data?.issues.data
-  const [isDragDisabled, setIsDragDisabled] = useState(false);
+  const projectId = useParams().projectId;
+  const { data } = useQuery(ISSEUS, {
+    variables: { projectId: projectId },
+  });
+  const renderContainerRef = useRef<HTMLDivElement>(null);
+  useLayoutEffect(() => {
+    if (!renderContainerRef.current) return;
+    const calculatedHeight = renderContainerRef.current.offsetTop + 20;
+    renderContainerRef.current.style.height = `calc(100vh - ${calculatedHeight}px)`;
+  }, []);
+  const issues = data?.issues.data;
 
-  const { data: issues, error: issueError } = useIssuesQuery(
-    { projectId, ...issueQuery },
-    { refetchOnMountOrArgChange: true }
-  );
-
-  // if (listError && issueError) {
-  //   if ((listError as APIERROR).status === 401 || (issueError as APIERROR).status === 401)
-  //     return <Navigate to='/login' />;
-  //   return (
-  //     <div className='grid h-full grow place-items-center text-xl'>
-  //       You are not part of this project ☝
-  //     </div>
-  //   );
-  // }
-
+  if (!issues) {
+    return null;
+  }
   return (
-    <div className='mt-6 flex grow flex-col px-8 sm:px-10'>
-      <h1 className='mb-4 text-xl font-semibold text-c-text'>Kanban Board</h1>
-      <Filter isEmpty={lists?.length === 0} {...{ projectId, setIsDragDisabled }} />
+    <DragDropContext onDragEnd={() => {}}>
+      <h1 className="mb-4 min-w-max px-8 text-xl font-semibold text-c-text sm:px-10">
+        Kanban Board
+      </h1>
 
-      {lists ? (
-        <Board {...{ lists, issues, isDragDisabled }} />
-      ) : (
-        <div className='grid h-[40vh] w-full place-items-center'>
-          <SS />
-        </div>
-      )}
-    </div>
+      <div
+        ref={renderContainerRef}
+        className="relative flex w-full min-w-max max-w-full gap-x-4 overflow-y-auto sm:px-10"
+      >
+        {STATUSES.map((status) => (
+          <Board key={status} status={status} issues={issues} />
+        ))}
+      </div>
+    </DragDropContext>
   );
 };
 

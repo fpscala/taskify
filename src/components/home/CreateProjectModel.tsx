@@ -1,7 +1,4 @@
 import { FieldError, FieldValues, useForm } from "react-hook-form";
-import { useCreateProjectMutation } from "../../api/endpoints/project.endpoint";
-import { useAuthUserQuery } from "../../api/endpoints/auth.endpoint";
-import type { CreateProject } from "../../api/apiTypes";
 import InputWithValidation from "../util/InputWithValidation";
 import WithLabel from "../util/WithLabel";
 import Model from "../util/Model";
@@ -25,7 +22,6 @@ const CreateProjectModel = (props: Props) => {
   const { onClose } = props;
   const { data } = useQuery(AUTHED_USER);
   const authUser = data?.currentUser;
-  // const [createProject] = useCreateProjectMutation();
   const [createProject] = useMutation(CREATE_PROJECT);
 
   const {
