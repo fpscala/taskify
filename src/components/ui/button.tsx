@@ -1,6 +1,6 @@
 import clsx from "clsx";
-import Link from "next/link";
 import React from "react";
+import { Link } from "react-router-dom";
 
 type ButtonProps = {
   children: React.ReactNode;
@@ -27,7 +27,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     if (href)
       return (
         <Link
-          href={href}
+          to={href}
           target={target ?? "_self"}
           className={clsx(
             !customColors && "bg-gray-200 hover:bg-gray-300",

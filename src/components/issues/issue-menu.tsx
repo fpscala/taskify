@@ -18,6 +18,7 @@ import {
 } from "../../components/ui/context-menu";
 import { MenuOptionType } from "../../models/types.interface";
 import { Issue } from "../../models/issues.interface";
+import clsx from "clsx";
 
 type MenuOptionsType = {
   actions: MenuOptionType[];

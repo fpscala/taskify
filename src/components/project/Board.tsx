@@ -1,50 +1,106 @@
+"use client";
+import React, { Fragment, useCallback, useLayoutEffect, useRef } from "react";
+import "../styles/split.css";
+import { BoardHeader } from "../project/header";
+import {
+  DragDropContext,
+  type DraggableLocation,
+  type DropResult,
+} from "react-beautiful-dnd";
+import {
+  insertItemIntoArray,
+  isEpic,
+  isNullish,
+  isSubtask,
+  moveItemWithinArray,
+} from "../util/helpers";
+import { IssueList } from "../issues/issue-list";
+import { IssueDetailsModal } from "../modals/board-issue-details";
 import { Issue, IssueStatus } from "../../models/issues.interface";
-import { Droppable } from "react-beautiful-dnd";
-import { Issue as IssueColumn } from "../issues/Issue";
+import { useFiltersContext } from "../context/use-filters-context";
+import { useParams } from "react-router-dom";
+import { gql, useQuery } from "@apollo/client";
+import { issues } from "../../apollo/queries";
+import { Project } from "../../models/projects.interface";
 
-interface Props {
-  status: IssueStatus;
-  issues: Issue[];
-}
+const STATUSES: IssueStatus[] = [
+  IssueStatus.TODO,
+  IssueStatus.IN_PROGRESS,
+  IssueStatus.DONE,
+];
+const ISSEUS = gql`
+  ${issues}
+`;
 
-type StatusMap = {
-  [key in IssueStatus]: string;
-};
-const statusMap: StatusMap = {
-  DONE: "DONE",
-  IN_PROGRESS: "IN PROGRESS",
-  TODO: "TO DO",
-};
-const Board: React.FC<Props> = ({ status, issues }) => {
+const Board: React.FC<{ project: Project}> = ({
+  project,
+}) => {
+  const renderContainerRef = useRef<HTMLDivElement>(null);
+  const projectId = useParams().projectId;
+  const { data } = useQuery(ISSEUS, {
+    variables: { projectId: projectId },
+  });
+  const issues = data?.issues.data;
+
+  if (!issues) {
+    return null;
+  }
+  const { search, issueTypes, epics } = useFiltersContext();
+
+  const filterIssues = useCallback(
+    (issues: Issue[] | undefined, status: IssueStatus) => {
+      if (!issues) return [];
+      const filteredIssues = issues.filter((issue) => {
+        if (issue.status === status && !isEpic(issue) && !isSubtask(issue)) {
+          return true;
+        }
+        return false;
+      });
+
+      return filteredIssues;
+    },
+    [search, epics, issueTypes]
+  );
+
+  useLayoutEffect(() => {
+    if (!renderContainerRef.current) return;
+    const calculatedHeight = renderContainerRef.current.offsetTop + 20;
+    renderContainerRef.current.style.height = `calc(100vh - ${calculatedHeight}px)`;
+  }, []);
+
+  const onDragEnd = (result: DropResult) => {
+    const { destination, source } = result;
+    if (isNullish(destination) || isNullish(source)) return;
+  };
+
   return (
-    <div
-      className={
-        "w-[350px] mb-5 h-max min-h-fit rounded-md bg-gray-100 px-1.5  pb-3"
-      }
-    >
-      <h2 className="sticky top-0 -mx-1.5 -mt-1.5 mb-1.5 rounded-t-md bg-gray-100 px-2 py-3 text-xs text-gray-500">
-        {statusMap[status]}{" "}
-        {issues.filter((issue) => issue.status == status).length}
-      </h2>
-
-      <Droppable droppableId={status}>
-        {({ droppableProps, innerRef, placeholder }) => (
-          <div
-            {...droppableProps}
-            ref={innerRef}
-            className=" min-h-[10px] h-fit"
-          >
-            {issues
-              .sort((a, b) => a.boardPosition! - b.boardPosition!)
-              .map((issue, index) => (
-                <IssueColumn key={issue.id} index={index} issue={issue} />
-              ))}
-            {placeholder}
-          </div>
-        )}
-      </Droppable>
-    </div>
+    <Fragment>
+      <IssueDetailsModal />
+      <BoardHeader project={project} />
+      <DragDropContext onDragEnd={onDragEnd}>
+        <div
+          ref={renderContainerRef}
+          className="relative flex w-full max-w-full gap-x-4 overflow-y-auto"
+        >
+          {STATUSES.map((status) => (
+            <IssueList
+              key={status}
+              status={status}
+              issues={filterIssues(issues, status)}
+            />
+          ))}
+        </div>
+      </DragDropContext>
+    </Fragment>
   );
 };
 
-export default Board;
+type IssueListPositionProps = {
+  activeIssues: Issue[];
+  destination: DraggableLocation;
+  source: DraggableLocation;
+  droppedIssueId: string;
+};
+
+
+export { Board };
