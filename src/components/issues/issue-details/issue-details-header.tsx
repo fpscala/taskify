@@ -2,14 +2,14 @@ import { MdClose, MdOutlineShare, MdRemoveRedEye } from "react-icons/md";
 import { AiOutlineLike } from "react-icons/ai";
 import { IssueDropdownMenu } from "../issue-menu";
 import { DropdownTrigger } from "../../ui/dropdown-menu";
-import { IssuePath } from "../issue-path";
-import { type IssueType } from "@/utils/types";
-import { NotImplemented } from "@/components/not-implemented";
-import { Button } from "@/components/ui/button";
+// import { IssuePath } from "../issue-path";
+import { NotImplemented } from "../..//not-implemented";
+import { Button } from "../../ui/button";
 import { BsThreeDots } from "react-icons/bs";
+import { Issue } from "../../../models/issues.interface";
 
 const IssueDetailsHeader: React.FC<{
-  issue: IssueType;
+  issue: Issue;
   setIssueKey: React.Dispatch<React.SetStateAction<string | null>>;
   isInViewport: boolean;
 }> = ({ issue, setIssueKey, isInViewport }) => {
@@ -19,7 +19,7 @@ const IssueDetailsHeader: React.FC<{
       data-state={isInViewport ? "inViewport" : "notInViewport"}
       className="sticky top-0 z-10 flex h-fit w-full items-center justify-between border-b-2 border-transparent bg-white p-0.5 [&[data-state=notInViewport]]:border-gray-200"
     >
-      <IssuePath issue={issue} setIssueKey={setIssueKey} />
+      {/* <IssuePath issue={issue} setIssueKey={setIssueKey} /> */}
       <div className="relative flex items-center gap-x-0.5">
         <NotImplemented feature="watch">
           <Button customColors className="bg-transparent hover:bg-gray-200">

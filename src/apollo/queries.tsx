@@ -27,7 +27,8 @@ export const issues = `query FetchIssues($userId:ID, $projectId:ID, $sprintId:ID
       id
       name
       key
-      description
+      description,
+      status
     }
   }
 }`;

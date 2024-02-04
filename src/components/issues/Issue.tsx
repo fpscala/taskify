@@ -32,7 +32,7 @@ const Issue: React.FC<{ issue: JiraIssue; index: number }> = ({
           {...dragHandleProps}
           className={clsx(
             isDragging && "bg-white",
-            "rounded-[3px] border-[0.3px] group my-0.5 max-w-full border-gray-300 bg-white p-2 text-sm shadow-sm shadow-gray-300 hover:bg-gray-200 "
+            "group my-0.5 max-w-full rounded-[3px] border-[0.3px] border-gray-300 bg-white p-2 text-sm shadow-sm shadow-gray-300 hover:bg-gray-200 "
           )}
         >
           <div className="flex items-start justify-between">
@@ -49,22 +49,22 @@ const Issue: React.FC<{ issue: JiraIssue; index: number }> = ({
             </IssueDropdownMenu>
           </div>
           <div className="w-fit">
-            {isEpic(issue.parent) ? (
+            {/* {isEpic(issue.parentId ? (
               <EpicName issue={issue.parent} className="py-0.5 text-sm" />
-            ) : null}
+            ) : null} */}
           </div>
           <div className="mt-3 flex items-center justify-between">
             <div className="flex items-center gap-x-3">
-              <IssueIcon issueType={issue.type} />
+              {/* <IssueIcon issueType={issue.type} /> */}
               <span className="text-xs font-medium text-gray-600">
                 {issue.key}
               </span>
             </div>
-            <Avatar
-              size={20}
-              src={issue.assignee?.avatar}
+            {/* <Avatar
+              // size={20}
+              src={issue.assigneeId?.avatar}
               alt={issue.assignee?.name ?? "Unassigned"}
-            />
+            /> */}
           </div>
         </div>
       )}

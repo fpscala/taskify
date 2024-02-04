@@ -1,13 +1,11 @@
 "use client";
 import React from "react";
-import { useFiltersContext } from "../context/use-filters-context";
 import { NotImplemented } from "../not-implemented";
 import { Button } from "../ui/button";
 import { BiLineChart } from "react-icons/bi";
 import { Project } from "../../models/projects.interface";
 
 const BoardHeader: React.FC<{ project: Project }> = ({ project }) => {
-  const { search, setSearch } = useFiltersContext();
   return (
     <div className="flex h-fit flex-col">
       <div className="text-sm text-gray-500">Projects / {project.name}</div>

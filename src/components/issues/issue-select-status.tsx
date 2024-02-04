@@ -2,7 +2,7 @@ import { Fragment, useState } from "react";
 import clsx from "clsx";
 import { FaChevronDown } from "react-icons/fa";
 import { NotImplemented } from "../../components/not-implemented";
-import { capitalizeMany } from "../../utils/helpers";
+import { capitalizeMany } from "../util/helpers";
 
 import {
   Select,

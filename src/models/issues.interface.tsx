@@ -1,14 +1,14 @@
 export enum IssueStatus {
-  TODO = "TODO",
-  IN_PROGRESS = "IN_PROGRESS",
-  DONE = "DONE",
+  TODO = "Todo",
+  IN_PROGRESS = "InProgress",
+  DONE = "Done",
 }
 export enum IssueType {
-  BUG = "BUG",
-  TASK = "TASK",
-  SUBTASK = "SUBTASK",
-  STORY = "STORY",
-  EPIC = "EPIC",
+  BUG = "Bug",
+  TASK = "Task",
+  SUBTASK = "Subtask",
+  STORY = "story",
+  EPIC = "epic",
 }
 
 export interface Issue {

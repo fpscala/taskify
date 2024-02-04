@@ -1,27 +1,20 @@
 "use client";
-import React, { Fragment, useCallback, useLayoutEffect, useRef } from "react";
-import "../styles/split.css";
-import { BoardHeader } from "../project/header";
+import { gql, useQuery } from "@apollo/client";
+import React, { Fragment } from "react";
 import {
   DragDropContext,
   type DraggableLocation,
   type DropResult,
 } from "react-beautiful-dnd";
-import {
-  insertItemIntoArray,
-  isEpic,
-  isNullish,
-  isSubtask,
-  moveItemWithinArray,
-} from "../util/helpers";
+import { useParams } from "react-router-dom";
+import { issues } from "../../apollo/queries";
+import { Issue, IssueStatus } from "../../models/issues.interface";
+import { Project } from "../../models/projects.interface";
 import { IssueList } from "../issues/issue-list";
 import { IssueDetailsModal } from "../modals/board-issue-details";
-import { Issue, IssueStatus } from "../../models/issues.interface";
-import { useFiltersContext } from "../context/use-filters-context";
-import { useParams } from "react-router-dom";
-import { gql, useQuery } from "@apollo/client";
-import { issues } from "../../apollo/queries";
-import { Project } from "../../models/projects.interface";
+import { BoardHeader } from "../project/header";
+import "../styles/split.css";
+import { isNullish } from "../util/helpers";
 
 const STATUSES: IssueStatus[] = [
   IssueStatus.TODO,
@@ -32,41 +25,31 @@ const ISSEUS = gql`
   ${issues}
 `;
 
-const Board: React.FC<{ project: Project}> = ({
-  project,
-}) => {
-  const renderContainerRef = useRef<HTMLDivElement>(null);
+const Board: React.FC<{ project: Project }> = ({ project }) => {
   const projectId = useParams().projectId;
   const { data } = useQuery(ISSEUS, {
     variables: { projectId: projectId },
   });
   const issues = data?.issues.data;
 
-  if (!issues) {
+  if (!issues || !project) {
     return null;
   }
-  const { search, issueTypes, epics } = useFiltersContext();
 
-  const filterIssues = useCallback(
-    (issues: Issue[] | undefined, status: IssueStatus) => {
-      if (!issues) return [];
-      const filteredIssues = issues.filter((issue) => {
-        if (issue.status === status && !isEpic(issue) && !isSubtask(issue)) {
-          return true;
-        }
-        return false;
-      });
+  function filterIssues(issues: Issue[] | undefined, status: IssueStatus) {
+    if (!issues) return [];
+    console.log(issues);
+    console.log(status);
+    const filteredIssues = issues.filter((issue) => issue.status === status);
+    console.log(filteredIssues);
+    return filteredIssues;
+  }
 
-      return filteredIssues;
-    },
-    [search, epics, issueTypes]
-  );
-
-  useLayoutEffect(() => {
-    if (!renderContainerRef.current) return;
-    const calculatedHeight = renderContainerRef.current.offsetTop + 20;
-    renderContainerRef.current.style.height = `calc(100vh - ${calculatedHeight}px)`;
-  }, []);
+  // useLayoutEffect(() => {
+  //   if (!renderContainerRef.current) return;
+  //   const calculatedHeight = renderContainerRef.current.offsetTop + 20;
+  //   renderContainerRef.current.style.height = `calc(100vh - ${calculatedHeight}px)`;
+  // }, []);
 
   const onDragEnd = (result: DropResult) => {
     const { destination, source } = result;
@@ -79,7 +62,7 @@ const Board: React.FC<{ project: Project}> = ({
       <BoardHeader project={project} />
       <DragDropContext onDragEnd={onDragEnd}>
         <div
-          ref={renderContainerRef}
+          // ref={renderContainerRef}
           className="relative flex w-full max-w-full gap-x-4 overflow-y-auto"
         >
           {STATUSES.map((status) => (
@@ -101,6 +84,5 @@ type IssueListPositionProps = {
   source: DraggableLocation;
   droppedIssueId: string;
 };
-
 
 export { Board };
