@@ -16,7 +16,7 @@ const Breadcrumbs = () => {
   return (
     <div className="mt-8 mb-4 min-w-max px-8 text-c-text sm:px-10">
       <Link to="/project" className="hover:underline">
-        project
+      Projects
       </Link>
       {fragments[1] && (
         <>
