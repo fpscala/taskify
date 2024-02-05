@@ -162,6 +162,5 @@ export function insertItemIntoArray<T>(arr: T[], item: T, index: number) {
 }
 
 export function getPluralEnd<T>(arr: T[]) {
-  if (arr.length == 0) return "s";
   return arr.length > 1 ? "s" : "";
 }

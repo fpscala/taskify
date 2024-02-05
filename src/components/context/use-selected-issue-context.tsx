@@ -9,6 +9,7 @@ import {
   useCallback,
 } from "react";
 import { Issue } from "../../models/issues.interface";
+import { useLocation } from "react-router-dom";
 
 type SelectedIssueContextProps = {
   issueKey: Issue["key"] | null;
@@ -26,7 +27,7 @@ export const SelectedIssueProvider = ({
 }: {
   children: ReactNode;
 }) => {
-  const pathname = usePathname();
+  const pathname = useLocation().pathname;
   const [issueKey, setIssueKey] = useState<Issue["key"] | null>(null);
 
   const setSelectedIssueUrl = useCallback(
@@ -36,10 +37,6 @@ export const SelectedIssueProvider = ({
     },
     [pathname]
   );
-
-  useEffect(() => {
-    setIssueKey(searchParams.get("selectedIssue"));
-  }, [searchParams]);
 
   useEffect(() => {
     setSelectedIssueUrl(issueKey);

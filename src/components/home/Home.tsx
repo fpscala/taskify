@@ -2,6 +2,8 @@ import { Outlet, useOutlet } from "react-router-dom";
 import Breadcrumbs from "./Breadcrumbs";
 import ProjectCatalog from "./ProjectCatalog";
 import type { Theme } from "../../utils";
+import { SelectedIssueProvider } from "../context/use-selected-issue-context";
+import { Container } from "../ui/container";
 
 interface Props {
   theme: Theme;
@@ -14,12 +16,14 @@ const Home = (props: Props) => {
   return (
     <>
       {outlet ? (
-        <>
-          <main className="z-10 h-screen grow overflow-auto bg-c-1 bg-center">
-            <Breadcrumbs />
-            <Outlet />
+        <Container className="h-full">
+          <main className="w-full">
+            <SelectedIssueProvider>
+              <Breadcrumbs />
+              <Outlet />
+            </SelectedIssueProvider>
           </main>
-        </>
+        </Container>
       ) : (
         <ProjectCatalog />
       )}

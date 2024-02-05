@@ -54,9 +54,9 @@ type StatusMap = {
 };
 
 export const statusMap: StatusMap = {
-  DONE: "DONE",
-  IN_PROGRESS: "IN PROGRESS",
-  TODO: "TO DO",
+  Done: "DONE",
+  InProgress: "IN PROGRESS",
+  Todo: "TO DO",
 };
 
 const IssueSelectStatus: React.FC<{

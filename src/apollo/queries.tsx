@@ -28,7 +28,9 @@ export const issues = `query FetchIssues($userId:ID, $projectId:ID, $sprintId:ID
       name
       key
       description,
-      status
+      status,
+      boardPosition,
+      sprintPosition
     }
   }
 }`;
