@@ -37,12 +37,11 @@ const UPDATE_ISSUE = gql`
 const Board: React.FC<{ project: Project }> = ({ project }) => {
   const renderContainerRef = useRef<HTMLDivElement>(null);
   useLayoutEffect(() => {
-    console.log(renderContainerRef?.current);
     if (renderContainerRef.current) {
       const calculatedHeight = renderContainerRef.current.offsetTop + 20;
       renderContainerRef.current.style.height = `calc(100vh - ${calculatedHeight}px)`;
     }
-  }, []);
+  }, [renderContainerRef.current]);
   const { search, issueTypes, epics } = useFiltersContext();
 
   const projectId = useParams().projectId;
@@ -56,7 +55,7 @@ const Board: React.FC<{ project: Project }> = ({ project }) => {
     [search, issueTypes, epics]
   );
 
-  const { data } = useQuery(ISSEUS, {
+  const { data, refetch } = useQuery(ISSEUS, {
     variables: { projectId: projectId },
   });
   const issues = data?.issues.data as Issue[];
@@ -80,7 +79,7 @@ const Board: React.FC<{ project: Project }> = ({ project }) => {
           droppedIssueId: result.draggableId,
         }),
       },
-    });
+    }).finally(() => refetch());
   };
 
   return (

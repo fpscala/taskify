@@ -5,21 +5,12 @@ import { BsThreeDots } from "react-icons/bs";
 import { Issue as JiraIssue } from "../../models/issues.interface";
 import { DropdownTrigger } from "../ui/dropdown-menu";
 import { IssueDropdownMenu } from "./issue-menu";
-
+import { useSelectedIssueContext } from "../context/use-selected-issue-context";
 const Issue: React.FC<{ issue: JiraIssue; index: number }> = ({
   issue,
   index,
 }) => {
-  type SelectedIssueContextProps = {
-    issueKey: JiraIssue["key"] | null;
-    setIssueKey: React.Dispatch<React.SetStateAction<JiraIssue["key"] | null>>;
-  };
-  const SelectedIssueContext = createContext<SelectedIssueContextProps>({
-    issueKey: null,
-    // eslint-disable-next-line @typescript-eslint/no-empty-function
-    setIssueKey: () => {},
-  });
-  const { setIssueKey } = useContext(SelectedIssueContext);
+  const { setIssueKey } = useSelectedIssueContext();
 
   return (
     <Draggable draggableId={issue.id} index={index}>
