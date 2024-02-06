@@ -60,12 +60,12 @@ const IssueList: React.FC<{
   return (
     <div
       className={clsx(
-        "mb-5 h-max min-h-fit w-[350px] rounded-md bg-gray-100 px-1.5  pb-3"
+        "flex flex-col flex-shrink-0 bg-gray-100 rounded-md w-80 px-1.5 pb-3"
       )}
       onMouseEnter={() => setVisiblity(true)}
       onMouseLeave={() => setVisiblity(false)}
     >
-      <h2 className="sticky top-0 -mx-1.5 -mt-1.5 mb-1.5 rounded-t-md bg-gray-100 px-2 py-3 text-xs text-gray-500">
+      <h2 className="sticky top-0 -mx-1.5 -mt-1.5 mb-1.5 rounded-t-md bg-gray-100 px-5 py-3 text-xs text-gray-500">
         {statusMap[status]}{" "}
         {issues.filter((issue) => issue.status == status).length}
         {` ISSUE${getPluralEnd(issues).toUpperCase()}`}
@@ -76,7 +76,7 @@ const IssueList: React.FC<{
           <div
             {...droppableProps}
             ref={innerRef}
-            className=" h-fit min-h-[10px]"
+            className=" h-fit min-h-[10px] p-3 pt-1 space-y-3"
           >
             {issues
               .sort((a, b) => a.boardPosition! - b.boardPosition!)

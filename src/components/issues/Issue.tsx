@@ -23,7 +23,7 @@ const Issue: React.FC<{ issue: JiraIssue; index: number }> = ({
           {...dragHandleProps}
           className={clsx(
             isDragging && "bg-white",
-            "group my-0.5 max-w-full rounded-[3px] border-[0.3px] border-gray-300 bg-white p-2 text-sm shadow-sm shadow-gray-300 hover:bg-gray-200 "
+            "block p-5 bg-white rounded-md shadow group my-0.5 max-w-full text-sm shadow-gray-300 hover:bg-gray-200 "
           )}
         >
           <div className="flex items-start justify-between">

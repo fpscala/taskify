@@ -15,7 +15,7 @@ function App() {
   const [theme, setTheme] = useState(getTheme());
 
   const toggleTheme = () =>
-    setTheme(({ mode }) => ({ mode: mode === "light" ? "dark" : "light" }));
+    setTheme(({ mode }) => ({ mode: mode === "light" ? "light" : "dark" }));
   return (
     <main
       className={`bg-c-111 ${

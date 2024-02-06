@@ -184,9 +184,9 @@ const SelectItem = React.forwardRef<
       ref={forwardedRef}
     >
       <SelectPrimitive.ItemText>{children}</SelectPrimitive.ItemText>
-      {/* <SelectPrimitive.ItemIndicator className="bg-blue-500">
+      <SelectPrimitive.ItemIndicator className="bg-blue-500">
           {children}
-        </SelectPrimitive.ItemIndicator> */}
+        </SelectPrimitive.ItemIndicator>
     </SelectPrimitive.Item>
   );
 });
