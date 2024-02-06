@@ -21,7 +21,7 @@ const Home = (props: Props) => {
   return (
     <>
       {outlet ? (
-          <div className="flex h-screen space-x-6">
+          <div className="flex h-screen">
             <Sidebar isOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
             <div className="flex min-w-0 flex-1 flex-col overflow-hidden bg-white">
               <div className="border-b-2 border-gray-200">
@@ -168,7 +168,7 @@ const Home = (props: Props) => {
                   </div>
                 </header>
               </div>
-              <main className="w-full">
+              <main className="w-full px-6">
                 <SelectedIssueProvider>
                   <Breadcrumbs />
                   <Outlet />

@@ -14,7 +14,7 @@ const Breadcrumbs = () => {
   });
   const project = data?.findProject;
   return (
-    <div className="mt-8 mb-4 mx-3 min-w-max text-c-text">
+    <div className="mt-8 mb-4 min-w-max text-c-text">
       <Link to="/project" className="hover:underline">
       Projects
       </Link>

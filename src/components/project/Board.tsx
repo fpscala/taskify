@@ -27,6 +27,7 @@ import {
   moveItemWithinArray,
 } from "../util/helpers";
 import { updateIssue } from "../../apollo/mutations";
+import { IssueMetaInfo } from "../issues/issue-details/issue-details-info/issue-details-info-meta";
 
 const STATUSES: IssueStatus[] = [
   IssueStatus.TODO,
@@ -64,7 +65,7 @@ const Board: React.FC<{ project: Project }> = ({ project }) => {
     [search, issueTypes, epics]
   );
 
-  const { data, refetch } = useQuery(ISSEUS, {
+  const { data } = useQuery(ISSEUS, {
     variables: { projectId: projectId },
   });
   const issues = data?.issues.data as Issue[];
@@ -80,6 +81,24 @@ const Board: React.FC<{ project: Project }> = ({ project }) => {
   const onDragEnd = (result: DropResult) => {
     const { destination, source } = result;
     if (isNullish(destination) || isNullish(source)) return;
+    setIssues((issues) => {
+      return issues.map((issue) => {
+        if (issue.id === result.draggableId) {
+          return {
+            ...issue,
+            id: result.draggableId,
+            status: destination.droppableId as IssueStatus,
+            boardPosition: calculateIssueBoardPosition({
+              activeIssues: issueList,
+              destination,
+              source,
+              droppedIssueId: result.draggableId,
+            }),
+          } as Issue;
+        } else return issue;
+      });
+    });
+
     updateIssue({
       variables: {
         id: result.draggableId,
@@ -91,7 +110,7 @@ const Board: React.FC<{ project: Project }> = ({ project }) => {
           droppedIssueId: result.draggableId,
         }),
       },
-    }).finally(() => refetch());
+    });
   };
 
   return (
@@ -100,7 +119,7 @@ const Board: React.FC<{ project: Project }> = ({ project }) => {
       <DragDropContext onDragEnd={onDragEnd}>
         <div
           ref={renderContainerRef}
-          className="inline-flex h-full p-3 space-x-3 overflow-hidden"
+          className="inline-flex h-full space-x-3 overflow-hidden"
         >
           {STATUSES.map((status) => (
             <IssueList
@@ -158,7 +177,6 @@ function getAfterDropPrevNextIssue(props: IssueListPositionProps) {
     throw new Error("dropped issue not found");
   }
   const isSameList = destination.droppableId === source.droppableId;
-
   const afterDropDestinationIssues = isSameList
     ? moveItemWithinArray(
         beforeDropDestinationIssues,
