@@ -18,7 +18,7 @@ function App() {
     setTheme(({ mode }) => ({ mode: mode === "light" ? "dark" : "light" }));
   return (
     <main
-      className={`bg-c-111 flex ${
+      className={`bg-c-111 ${
         theme.mode === "light" ? "light-theme" : "dark-theme"
       }`}
     >
