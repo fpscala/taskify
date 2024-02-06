@@ -34,3 +34,15 @@ export const issues = `query FetchIssues($userId:ID, $projectId:ID, $sprintId:ID
     }
   }
 }`;
+
+export const findIssue = `query FindIssue($issueId:ID!) {
+  findIssue(value:$issueId) {
+    id
+    name
+    key
+    description,
+    status,
+    boardPosition,
+    sprintPosition
+  }
+}`;

@@ -1,6 +1,13 @@
 "use client";
 import { gql, useMutation, useQuery } from "@apollo/client";
-import React, { Fragment, useCallback, useLayoutEffect, useRef } from "react";
+import React, {
+  Fragment,
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState,
+} from "react";
 import {
   DragDropContext,
   type DraggableLocation,
@@ -36,6 +43,8 @@ const UPDATE_ISSUE = gql`
 
 const Board: React.FC<{ project: Project }> = ({ project }) => {
   const renderContainerRef = useRef<HTMLDivElement>(null);
+  const [issueList, setIssues] = useState<Issue[]>([]);
+
   useLayoutEffect(() => {
     if (renderContainerRef.current) {
       const calculatedHeight = renderContainerRef.current.offsetTop + 20;
@@ -59,9 +68,12 @@ const Board: React.FC<{ project: Project }> = ({ project }) => {
     variables: { projectId: projectId },
   });
   const issues = data?.issues.data as Issue[];
+  useEffect(() => {
+    setIssues(issues);
+  }, [issues]);
   const [updateIssue] = useMutation(UPDATE_ISSUE);
 
-  if (!issues || !project) {
+  if (!issues || !project || !projectId) {
     return null;
   }
 
@@ -73,7 +85,7 @@ const Board: React.FC<{ project: Project }> = ({ project }) => {
         id: result.draggableId,
         status: destination.droppableId as IssueStatus,
         boardPosition: calculateIssueBoardPosition({
-          activeIssues: issues,
+          activeIssues: issueList,
           destination,
           source,
           droppedIssueId: result.draggableId,
@@ -94,7 +106,9 @@ const Board: React.FC<{ project: Project }> = ({ project }) => {
             <IssueList
               key={status}
               status={status}
-              issues={filterIssues(issues, status)}
+              projectId={projectId}
+              setIssues={setIssues}
+              issues={filterIssues(issueList, status)}
             />
           ))}
         </div>
