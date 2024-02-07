@@ -3,7 +3,6 @@ import Breadcrumbs from "./Breadcrumbs";
 import ProjectCatalog from "./ProjectCatalog";
 import type { Theme } from "../../utils";
 import { SelectedIssueProvider } from "../context/use-selected-issue-context";
-import Avatar from "../util/Avatar";
 import { useState } from "react";
 import Sidebar from "../sidebar";
 

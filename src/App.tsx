@@ -7,6 +7,7 @@ import {
 import { lazy, Suspense as S, useState } from "react";
 import { getTheme } from "./utils";
 import Home from "./components/home/Home";
+import Login from "./components/auth/login";
 import { Toaster } from "react-hot-toast";
 
 const Project = lazy(() => import("./components/project/Project"));
@@ -37,6 +38,7 @@ function App() {
               }
             />
           </R>
+          <R path="/login" element={<Login />} />
           <R path="/" element={<Navigate to="/project" />} />
         </Routes>
       </BR>
