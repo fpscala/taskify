@@ -9,3 +9,15 @@ export const updateIssue = `mutation UpdateIssue($id: ID!, $status: IssueStatus!
 export const createIssue = `mutation CreateIssue($name: String!, $projectId: ID!, $type: IssueType!) {
 	createIssue(name: $name, projectId: $projectId, type: $type)
 }`;
+export const login = `mutation Login($email:String!,$password:String!) {
+  login(email:$email, password:$password) {
+    accessToken
+    refreshToken
+  }
+}`;
+export const refreshToken = `mutation RefreshToken($token:String!) {
+  refreshToken(value:$token) {
+    accessToken
+    refreshToken
+  }
+}`;

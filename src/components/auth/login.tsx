@@ -1,9 +1,30 @@
 import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { BsEye, BsEyeSlash } from "react-icons/bs";
 import { useState } from "react";
+import { FieldValues, useForm } from "react-hook-form";
+import { login } from "../../apollo/mutations";
+import { gql, useMutation } from "@apollo/client";
 
+const LOGIN = gql`
+  ${login}
+`;
 const Login = () => {
   const [isVisible, setVisiblity] = useState(false);
+  const [loginRequest] = useMutation(LOGIN);
+  const { register, handleSubmit } = useForm();
+  const navigate = useNavigate();
+  const handleLoginRequest = (form: FieldValues) => {
+    loginRequest({
+      variables: { ...form },
+      onCompleted: (data) => {
+        const { accessToken, refreshToken } = data.login;
+        window.localStorage.setItem("accessToken", accessToken);
+        window.localStorage.setItem("refreshToken", refreshToken);
+        navigate("/");
+      },
+    });
+  };
   return (
     <>
       <main className="flex h-screen items-center overflow-hidden bg-gray-50 dark:bg-[#0D1117]">
@@ -16,7 +37,7 @@ const Login = () => {
               </div>
             </div>
           </Link>
-          <div className="relative z-[1] mt-12 sm:mt-16">
+          <div className="relative z-[1] mt-5 sm:mt-5">
             <svg
               viewBox="0 0 1090 1090"
               aria-hidden="true"
@@ -32,7 +53,7 @@ const Login = () => {
               <circle cx="545" cy="545" r="352.5"></circle>
             </svg>
             <h1 className="text-center text-2xl font-medium tracking-tight text-gray-900 dark:text-[#e6edf3]">
-              Tizimga kirish
+              Log in
             </h1>
             <p className="mt-3 text-center text-lg text-gray-600 dark:text-[#e6edf3]">
               Don’t have an account?
@@ -42,21 +63,29 @@ const Login = () => {
               for a free trial.
             </p>
           </div>
-          <div className="sm:rounded-5xl z-[2] -mx-4 mt-10 flex-auto rounded-3xl bg-white px-4 py-10 shadow-2xl shadow-gray-900/10 dark:bg-[#161B22] dark:shadow-gray-500/10 sm:mx-0 sm:flex-none sm:p-24">
+          <form
+            onSubmit={handleSubmit(handleLoginRequest)}
+            className="sm:rounded-5xl z-[2] -mx-4 mt-10 flex-auto rounded-3xl bg-white px-4 py-10 shadow-2xl shadow-gray-900/10 dark:bg-[#161B22] dark:shadow-gray-500/10 sm:mx-0 sm:flex-none sm:p-24"
+          >
             <div className="space-y-6">
               <div>
                 <label
                   htmlFor="login"
                   className="mb-2 block text-base font-semibold text-gray-900 dark:text-[#e6edf3]"
                 >
-                  Login
+                  Email
                 </label>
                 <input
-                  v-model="submitData.login"
-                  type="text"
-                  id="login"
+                  type="email"
+                  {...register("email", {
+                    required: {
+                      value: true,
+                      message: "Please enter your email!",
+                    },
+                  })}
+                  id="email"
                   className="block w-full appearance-none rounded-lg border border-gray-200 bg-white  p-2.5 text-sm text-gray-900 placeholder-gray-400 focus:border-blue-500 focus:outline-none focus:ring-blue-500 dark:border-[#30363D]  dark:bg-[#0D1117] dark:text-white"
-                  placeholder="Enter your login"
+                  placeholder="Enter your email"
                 />
               </div>
               <div>
@@ -69,9 +98,15 @@ const Login = () => {
                 <div className="relative">
                   <input
                     id="password"
+                    {...register("password", {
+                      required: {
+                        value: true,
+                        message: "Please enter your password!",
+                      },
+                    })}
                     type={isVisible ? "text" : "password"}
                     className="block w-full appearance-none rounded-lg border border-gray-200 bg-white p-2.5 text-sm text-gray-900 placeholder-gray-400 focus:border-blue-500 focus:outline-none focus:ring-blue-500 dark:border-[#30363D]  dark:bg-[#0D1117] dark:text-white"
-                    placeholder="Parolingizni kiriting"
+                    placeholder="Enter your password"
                   />
                   {isVisible ? (
                     <BsEyeSlash
@@ -91,9 +126,9 @@ const Login = () => {
               className="mt-8 inline-flex w-full cursor-pointer items-center justify-center rounded-lg bg-blue-500 p-2.5 text-base font-semibold text-white hover:bg-blue-600"
               type="submit"
             >
-              Kirish
+              Login
             </button>
-          </div>
+          </form>
         </div>
       </main>
     </>

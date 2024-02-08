@@ -1,28 +1,25 @@
 import { Link, useLocation } from "react-router-dom";
 import { Icon } from "@iconify/react";
-import { gql, useQuery } from "@apollo/client";
-import { findProject } from "../../apollo/queries";
-const FIND_PROJECT = gql`
-  ${findProject}
-`;
-const Breadcrumbs = () => {
+import { Project } from "../../models/projects.interface";
+
+interface Props {
+  project: Project;
+}
+
+const Breadcrumbs: React.FC<Props> = ({ project }) => {
   const location = useLocation();
   const fragments = location.pathname.slice(1).split("/");
 
-  const { data } = useQuery(FIND_PROJECT, {
-    variables: { projectId: fragments[1] },
-  });
-  const project = data?.findProject;
   return (
-    <div className="mt-8 mb-4 min-w-max text-c-text">
+    <div className="text-c-text mt-4 min-w-max">
       <Link to="/project" className="hover:underline">
-      Projects
+        Projects
       </Link>
       {fragments[1] && (
         <>
           <Icon className="mx-2 inline text-xl" icon="ei:chevron-right" />
           <Link to={"/project/" + fragments[1]} className="hover:underline">
-            {project?.name ?? "undefined"}
+            {project.name ?? "undefined"}
           </Link>
         </>
       )}
@@ -33,7 +30,7 @@ const Breadcrumbs = () => {
             to={`/project/${fragments[1]}/board`}
             className="hover:underline"
           >
-            Kanban board
+            {project.key + " board"}
           </Link>
         </>
       )}
