@@ -15,8 +15,8 @@ export const login = `mutation Login($email:String!,$password:String!) {
     refreshToken
   }
 }`;
-export const refreshToken = `mutation RefreshToken($token:String!) {
-  refreshToken(value:$token) {
+export const refreshToken = `mutation RefreshToken($refreshToken:String!) {
+  refreshToken(value:$refreshToken) {
     accessToken
     refreshToken
   }

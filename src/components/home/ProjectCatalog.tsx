@@ -16,15 +16,13 @@ const PROJECTS = gql`
 `;
 
 const ProjectCatalog = () => {
-  const { data } = useQuery(AUTHED_USER);
-  const authUser = data?.currentUser;
   const { loading, data: projectsResponse } = useQuery(PROJECTS);
   const projects = projectsResponse?.projects as Project[];
   const [isOpen, setIsOpen] = useState(false);
 
-  if (!authUser || loading)
+  if (loading)
     return (
-      <div className="z-10 grid w-full place-items-center bg-c-1 text-xl text-c-text">
+      <div className="bg-c-1 text-c-text z-10 grid w-full place-items-center text-xl">
         {loading ? (
           "Fetching your projects 🚀"
         ) : (
@@ -38,8 +36,8 @@ const ProjectCatalog = () => {
 
   return (
     <>
-      <div className="z-10 h-screen min-h-fit grow overflow-auto bg-c-1 px-10 pb-10 pt-12 text-c-5">
-        <div className="min-w-[43rem] flex justify-between">
+      <div className="bg-c-1 text-c-5 z-10 h-screen min-h-fit grow overflow-auto px-10 pb-10 pt-12">
+        <div className="flex min-w-[43rem] justify-between">
           <span className="text-2xl font-semibold tracking-wide">Projects</span>
           <button onClick={() => setIsOpen(true)} className="btn">
             Create Project
@@ -49,12 +47,12 @@ const ProjectCatalog = () => {
           <div className="relative">
             <input
               placeholder="Search projects"
-              className="py-[5px] w-44 rounded-sm border-2 bg-transparent pl-9 pr-2 text-sm outline-none focus:border-chakra-blue"
+              className="focus:border-chakra-blue w-44 rounded-sm border-2 bg-transparent py-[5px] pl-9 pr-2 text-sm outline-none"
             />
             <Icon
               width={20}
               icon="ant-design:search-outlined"
-              className="top-[6px] w-[19px] absolute left-2"
+              className="absolute top-[6px] left-2 w-[19px]"
             />
           </div>
         </div>
@@ -67,7 +65,7 @@ const ProjectCatalog = () => {
           </div>
           {projects ? (
             projects.length !== 0 ? (
-              <div className="mt-1 border-t-2 border-c-3">
+              <div className="border-c-3 mt-1 border-t-2">
                 {projects.map((project, i) => (
                   <ProjectRow key={project.id} idx={i} project={project} />
                 ))}

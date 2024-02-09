@@ -21,7 +21,7 @@ const Login = () => {
         const { accessToken, refreshToken } = data.login;
         window.localStorage.setItem("accessToken", accessToken);
         window.localStorage.setItem("refreshToken", refreshToken);
-        navigate("/");
+        return navigate("/");
       },
     });
   };

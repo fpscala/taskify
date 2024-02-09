@@ -1,14 +1,10 @@
-import {
-  BrowserRouter as BR,
-  Navigate,
-  Route as R,
-  Routes,
-} from "react-router-dom";
+import { BrowserRouter as BR, Navigate, Route, Routes } from "react-router-dom";
 import { lazy, Suspense as S, useState } from "react";
 import { getTheme } from "./utils";
 import Home from "./components/home/Home";
 import Login from "./components/auth/login";
 import { Toaster } from "react-hot-toast";
+import PrivateRoutes from "./components/PrivateRoutes";
 
 const Project = lazy(() => import("./components/project/Project"));
 
@@ -25,21 +21,23 @@ function App() {
     >
       <BR>
         <Routes>
-          <R
-            path="/project"
-            element={<Home theme={theme} toggleTheme={toggleTheme} />}
-          >
-            <R
-              path=":projectId/board"
-              element={
-                <S>
-                  <Project />
-                </S>
-              }
-            />
-          </R>
-          <R path="/login" element={<Login />} />
-          <R path="/" element={<Navigate to="/project" />} />
+          <Route element={<PrivateRoutes />}>
+            <Route
+              path="/project"
+              element={<Home theme={theme} toggleTheme={toggleTheme} />}
+            >
+              <Route
+                path=":projectId/board"
+                element={
+                  <S>
+                    <Project theme={theme} toggleTheme={toggleTheme} />
+                  </S>
+                }
+              />
+            </Route>
+            <Route path="/" element={<Navigate to="/project" />} />
+          </Route>
+          <Route path="/login" element={<Login />} />
         </Routes>
       </BR>
       <Toaster />

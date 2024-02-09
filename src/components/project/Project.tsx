@@ -23,7 +23,7 @@ const Project: React.FC<Props> = ({ theme, toggleTheme }) => {
   const { data } = useQuery(FIND_PROJECT, {
     variables: { projectId: projectId },
   });
-  const project = data.findProject;
+  const project = data?.findProject;
   if (!project) {
     return null;
   }
