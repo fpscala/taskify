@@ -1,28 +1,20 @@
-import { useIssueDetails } from "@/hooks/query-hooks/use-issue-details";
-import { type GetIssueCommentResponse } from "@/app/api/issues/[issueId]/comments/route";
-import {
-  Editor,
-  type EditorContentType,
-} from "@/components/text-editor/editor";
-import { useKeydownListener } from "@/hooks/use-keydown-listener";
+import { Editor, type EditorContentType } from "../../../text-editor/editor";
+import { useKeydownListener } from "../../../../hooks/use-keydown-listener";
 import { Fragment, useRef, useState } from "react";
-import { useIsInViewport } from "@/hooks/use-is-in-viewport";
+import { useIsInViewport } from "../../../../hooks/use-is-in-viewport";
 import { type SerializedEditorState } from "lexical";
-import { type IssueType } from "@/utils/types";
-import { Avatar } from "@/components/avatar";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
-import { EditorPreview } from "@/components/text-editor/preview";
-import { Button } from "@/components/ui/button";
-import { useIsAuthenticated } from "@/hooks/use-is-authed";
+import { EditorPreview } from "../../../text-editor/preview";
+import { Button } from "../../../ui/button";
+import { Issue } from "../../../../models/issues.interface";
 dayjs.extend(relativeTime);
 
-const Comments: React.FC<{ issue: IssueType }> = ({ issue }) => {
+const Comments: React.FC<{ issue: Issue }> = ({ issue }) => {
   const scrollRef = useRef(null);
   const [isWritingComment, setIsWritingComment] = useState(false);
   const [isInViewport, ref] = useIsInViewport();
-  const { comments, addComment } = useIssueDetails();
-  const [isAuthenticated, openAuthModal] = useIsAuthenticated();
+  // const { comments, addComment } = useIssueDetails();
 
   useKeydownListener(scrollRef, ["m", "M"], handleEdit);
   function handleEdit(ref: React.RefObject<HTMLElement>) {
@@ -35,20 +27,16 @@ const Comments: React.FC<{ issue: IssueType }> = ({ issue }) => {
   }
 
   function handleSave(state: SerializedEditorState | undefined) {
-    if (!isAuthenticated) {
-      openAuthModal();
-      return;
-    }
     if (!state) {
       setIsWritingComment(false);
       return;
     }
-    addComment({
-      issueId: issue.id,
-      content: JSON.stringify(state),
-      // eslint-disable-next-line
-      authorId: "user!.id",
-    });
+    // addComment({
+    //   issueId: issue.id,
+    //   content: JSON.stringify(state),
+    //   // eslint-disable-next-line
+    //   authorId: "user!.id",
+    // });
     setIsWritingComment(false);
   }
   function handleCancel() {
@@ -74,99 +62,8 @@ const Comments: React.FC<{ issue: IssueType }> = ({ issue }) => {
           />
         )}
       </div>
-      <div ref={ref} className="flex flex-col gap-y-5 pb-5">
-        {comments?.map((comment) => (
-          <CommentPreview key={comment.id} comment={comment}/*  user={user} */ />
-        ))}
-      </div>
+      <div ref={ref} className="flex flex-col gap-y-5 pb-5"></div>
     </Fragment>
-  );
-};
-
-const CommentPreview: React.FC<{
-  comment: GetIssueCommentResponse["comment"];
-  // user: UserResource | undefined | null;
-}> = ({ comment/* , user */ }) => {
-  const [isEditing, setIsEditing] = useState(false);
-  const [isAuthenticated, openAuthModal] = useIsAuthenticated();
-  const { updateComment } = useIssueDetails();
-
-  function handleSave(state: SerializedEditorState | undefined) {
-    if (!isAuthenticated) {
-      openAuthModal();
-      return;
-    }
-    updateComment({
-      issueId: comment.issueId,
-      commentId: comment.id,
-      content: JSON.stringify(state),
-    });
-    setIsEditing(false);
-  }
-
-  return (
-    <div className="flex w-full gap-x-2">
-      <Avatar
-        src={comment.author?.avatar ?? ""}
-        alt={`${comment.author?.name ?? "Guest"}`}
-      />
-      <div className="w-full">
-        <div className="flex items-center gap-x-3 text-xs">
-          <span className="font-semibold text-gray-600 ">
-            {comment.author?.name}
-          </span>
-          <span className="text-gray-500">
-            {dayjs(comment.createdAt).fromNow()}
-          </span>
-
-          <span
-            data-state={comment.isEdited ? "edited" : "not-edited"}
-            className="hidden text-gray-400 [&[data-state=edited]]:block"
-          >
-            (Edited)
-          </span>
-        </div>
-        {isEditing ? (
-          <Editor
-            action="comment"
-            content={
-              comment.content
-                ? (JSON.parse(comment.content) as EditorContentType)
-                : undefined
-            }
-            onSave={handleSave}
-            onCancel={() => setIsEditing(false)}
-            className="mt-2"
-          />
-        ) : (
-          <EditorPreview
-            action="comment"
-            content={
-              comment.content
-                ? (JSON.parse(comment.content) as EditorContentType)
-                : undefined
-            }
-          />
-        )}
-        {/* {comment.authorId == user?.id ? ( */}
-          <div className="mb-1">
-            <Button
-              onClick={() => setIsEditing(true)}
-              customColors
-              className="bg-transparent text-xs font-medium text-gray-500 underline-offset-2 hover:underline"
-            >
-              Edit
-            </Button>
-            <Button
-              customColors
-              className="bg-transparent text-xs font-medium text-gray-500 underline-offset-2 hover:underline"
-            >
-              Delete
-            </Button>
-          </div>
-        {/* ) : null} */}
-      </div>
-    </div>
   );
 };
 

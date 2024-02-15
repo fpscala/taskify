@@ -12,14 +12,14 @@ import { Issue } from "../../models/issues.interface";
 import { useLocation } from "react-router-dom";
 
 type SelectedIssueContextProps = {
-  issueKey: Issue["key"] | null;
-  setIssueKey: React.Dispatch<React.SetStateAction<Issue["key"] | null>>;
+  issue: Issue | null;
+  setIssue: React.Dispatch<React.SetStateAction<Issue | null>>;
 };
 
 const SelectedIssueContext = createContext<SelectedIssueContextProps>({
-  issueKey: null,
+  issue: null,
   // eslint-disable-next-line @typescript-eslint/no-empty-function
-  setIssueKey: () => {},
+  setIssue: () => {},
 });
 
 export const SelectedIssueProvider = ({
@@ -28,7 +28,7 @@ export const SelectedIssueProvider = ({
   children: ReactNode;
 }) => {
   const pathname = useLocation().pathname;
-  const [issueKey, setIssueKey] = useState<Issue["key"] | null>(null);
+  const [issue, setIssue] = useState<Issue | null>(null);
 
   const setSelectedIssueUrl = useCallback(
     (key: Issue["key"] | null) => {
@@ -39,11 +39,11 @@ export const SelectedIssueProvider = ({
   );
 
   useEffect(() => {
-    setSelectedIssueUrl(issueKey);
-  }, [issueKey, setSelectedIssueUrl]);
+    issue && setSelectedIssueUrl(issue?.key);
+  }, [issue, setSelectedIssueUrl]);
 
   return (
-    <SelectedIssueContext.Provider value={{ issueKey, setIssueKey }}>
+    <SelectedIssueContext.Provider value={{ issue, setIssue }}>
       {children}
     </SelectedIssueContext.Provider>
   );

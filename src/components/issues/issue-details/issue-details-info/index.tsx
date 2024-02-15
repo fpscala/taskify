@@ -1,24 +1,23 @@
 import React, { Fragment, useRef, useState } from "react";
 import { NotImplemented } from "../../../not-implemented";
-import { IssueTitle } from "../../issue-title";
 import { IssueSelectStatus } from "../../issue-select-status";
-import { useSelectedIssueContext } from "../../../context/use-selected-issue-context";
 import { Button } from "../../..//ui/button";
 import { Comments } from "./issue-details-info-comments";
 import { IssueMetaInfo } from "./issue-details-info-meta";
 import { Description } from "./issue-details-info-description";
 import { IssueDetailsInfoAccordion } from "./issue-details-info-accordion";
 import { IssueDetailsInfoActions } from "./issue-details-info-actions";
-import { ChildIssueList } from "./issue-details-info-child-issues";
 import { isEpic } from "../../../util/helpers";
-import { ColorPicker } from "../../../color-picker";
-import { useContainerWidth } from "@/hooks/use-container-width";
 import Split from "react-split";
-import "@/styles/split.css";
+import "../../../styles/split.css";
+import { Issue } from "../../../../models/issues.interface";
+import { LightningIcon } from "../../../svgs";
+import { useContainerWidth } from "../../../../hooks/use-container-width";
+import { IssueTitle } from "../issue-title";
 
 const IssueDetailsInfo = React.forwardRef<
   HTMLDivElement,
-  { issue: IssueType | undefined }
+  { issue: Issue | undefined }
 >(({ issue }, ref) => {
   const [parentRef, parentWidth] = useContainerWidth();
 
@@ -38,9 +37,8 @@ IssueDetailsInfo.displayName = "IssueDetailsInfo";
 
 const SmallIssueDetailsInfo = React.forwardRef<
   HTMLDivElement,
-  { issue: IssueType }
+  { issue: Issue }
 >(({ issue }, ref) => {
-  const { issueKey } = useSelectedIssueContext();
   const nameRef = useRef<HTMLInputElement>(null);
   const [isEditing, setIsEditing] = useState(false);
   const [isAddingChildIssue, setIsAddingChildIssue] = useState(false);
@@ -48,7 +46,6 @@ const SmallIssueDetailsInfo = React.forwardRef<
   return (
     <Fragment>
       <div className="flex items-center gap-x-2">
-        {isEpic(issue) ? <ColorPicker issue={issue} /> : null}
         <h1
           ref={ref}
           role="button"
@@ -86,16 +83,7 @@ const SmallIssueDetailsInfo = React.forwardRef<
           </Button>
         </NotImplemented>
       </div>
-      <Description issue={issue} key={String(issueKey) + issue.id} />
-      {hasChildren(issue) || isAddingChildIssue ? (
-        <ChildIssueList
-          issues={issue.children}
-          parentIsEpic={isEpic(issue)}
-          parentId={issue.id}
-          isAddingChildIssue={isAddingChildIssue}
-          setIsAddingChildIssue={setIsAddingChildIssue}
-        />
-      ) : null}
+      <Description issue={issue} key={String(issue.key) + issue.id} />
       <IssueDetailsInfoAccordion issue={issue} />
       <IssueMetaInfo issue={issue} />
       <Comments issue={issue} />
@@ -105,83 +93,72 @@ const SmallIssueDetailsInfo = React.forwardRef<
 
 SmallIssueDetailsInfo.displayName = "SmallIssueDetailsInfo";
 
-const LargeIssueDetails = React.forwardRef<
-  HTMLDivElement,
-  { issue: IssueType }
->(({ issue }, ref) => {
-  const { issueKey } = useSelectedIssueContext();
-  const nameRef = useRef<HTMLInputElement>(null);
-  const [isEditing, setIsEditing] = useState(false);
-  const [isAddingChildIssue, setIsAddingChildIssue] = useState(false);
+const LargeIssueDetails = React.forwardRef<HTMLDivElement, { issue: Issue }>(
+  ({ issue }, ref) => {
+    const nameRef = useRef<HTMLInputElement>(null);
+    const [isEditing, setIsEditing] = useState(false);
+    const [isAddingChildIssue, setIsAddingChildIssue] = useState(false);
 
-  return (
-    <Split
-      sizes={[60, 40]}
-      gutterSize={2}
-      className="flex max-h-[70vh] w-full overflow-hidden"
-      minSize={300}
-    >
-      <div className="overflow-y-auto pr-3">
-        <div className="flex items-center gap-x-2">
-          {isEpic(issue) ? <ColorPicker issue={issue} /> : null}
-          <h1
-            ref={ref}
-            role="button"
-            onClick={() => setIsEditing(true)}
-            data-state={isEditing ? "editing" : "notEditing"}
-            className="w-full transition-all [&[data-state=notEditing]]:hover:bg-gray-100"
-          >
-            <IssueTitle
-              className="mr-1 py-1"
-              key={issue.id + issue.name}
-              isEditing={isEditing}
-              setIsEditing={setIsEditing}
-              issue={issue}
-              ref={nameRef}
+    return (
+      <Split
+        sizes={[60, 40]}
+        gutterSize={2}
+        className="flex max-h-[70vh] w-full overflow-hidden"
+        minSize={300}
+      >
+        <div className="overflow-y-auto pr-3">
+          <div className="flex items-center gap-x-2">
+            <h1
+              ref={ref}
+              role="button"
+              onClick={() => setIsEditing(true)}
+              data-state={isEditing ? "editing" : "notEditing"}
+              className="w-full transition-all [&[data-state=notEditing]]:hover:bg-gray-100"
+            >
+              <IssueTitle
+                className="mr-1 py-1"
+                key={issue.id + issue.name}
+                isEditing={isEditing}
+                setIsEditing={setIsEditing}
+                issue={issue}
+                ref={nameRef}
+              />
+            </h1>
+          </div>
+          <IssueDetailsInfoActions
+            onAddChildIssue={() => setIsAddingChildIssue(true)}
+            variant={"lg"}
+          />
+          <Description issue={issue} key={String(issue.key) + issue.id} />
+
+          <Comments issue={issue} />
+        </div>
+
+        <div className="mt-4 bg-white pl-3">
+          <div className="relative flex items-center gap-x-3">
+            <IssueSelectStatus
+              key={issue.id + issue.status}
+              currentStatus={issue.status}
+              issueId={issue.id}
+              variant="lg"
             />
-          </h1>
-        </div>
-        <IssueDetailsInfoActions
-          onAddChildIssue={() => setIsAddingChildIssue(true)}
-          variant={"lg"}
-        />
-        <Description issue={issue} key={String(issueKey) + issue.id} />
-        {hasChildren(issue) || isAddingChildIssue ? (
-          <ChildIssueList
-            issues={issue.children}
-            parentIsEpic={isEpic(issue)}
-            parentId={issue.id}
-            isAddingChildIssue={isAddingChildIssue}
-            setIsAddingChildIssue={setIsAddingChildIssue}
-          />
-        ) : null}
-        <Comments issue={issue} />
-      </div>
+            <NotImplemented>
+              <Button customColors className="hover:bg-gray-200">
+                <div className="flex items-center">
+                  <LightningIcon className="mt-0.5" />
+                  <span>Actions</span>
+                </div>
+              </Button>
+            </NotImplemented>
+          </div>
 
-      <div className="mt-4 bg-white pl-3">
-        <div className="relative flex items-center gap-x-3">
-          <IssueSelectStatus
-            key={issue.id + issue.status}
-            currentStatus={issue.status}
-            issueId={issue.id}
-            variant="lg"
-          />
-          <NotImplemented>
-            <Button customColors className="hover:bg-gray-200">
-              <div className="flex items-center">
-                <LightningIcon className="mt-0.5" />
-                <span>Actions</span>
-              </div>
-            </Button>
-          </NotImplemented>
+          <IssueDetailsInfoAccordion issue={issue} />
+          <IssueMetaInfo issue={issue} />
         </div>
-
-        <IssueDetailsInfoAccordion issue={issue} />
-        <IssueMetaInfo issue={issue} />
-      </div>
-    </Split>
-  );
-});
+      </Split>
+    );
+  }
+);
 
 LargeIssueDetails.displayName = "LargeIssueDetails";
 

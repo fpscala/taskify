@@ -1,4 +1,4 @@
-import { Issue, IssueType } from "../../models/issues.interface";
+import { Issue, IssueStatus, IssueType } from "../../models/issues.interface";
 import { IssueCountType } from "../../models/types.interface";
 
 export function getBaseUrl() {
@@ -131,7 +131,7 @@ export function dateToLongString(date: Date) {
 }
 
 export function isDone(issue: Issue) {
-  return issue.status == "DONE";
+  return issue.status == IssueStatus.DONE;
 }
 
 export function hexToRgba(hex: string | null, opacity?: number) {

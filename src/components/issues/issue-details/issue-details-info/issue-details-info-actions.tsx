@@ -1,7 +1,7 @@
-import { NotImplemented } from "@/components/not-implemented";
-import { ChildrenTreeIcon } from "@/components/svgs";
-import { Button } from "@/components/ui/button";
-import { TooltipWrapper } from "@/components/ui/tooltip";
+import { NotImplemented } from "../../../not-implemented";
+import { ChildrenTreeIcon } from "../../../svgs";
+import { Button } from "../../../ui/button";
+import { TooltipWrapper } from "../../../ui/tooltip";
 import { BiLink } from "react-icons/bi";
 import { BsThreeDots } from "react-icons/bs";
 import { CgAttachment } from "react-icons/cg";

@@ -1,53 +1,36 @@
 "use client";
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useEffect } from "react";
+import { Issue } from "../../../models/issues.interface";
+import { useIsInViewport } from "../../../hooks/use-is-in-viewport";
 import { IssueDetailsHeader } from "./issue-details-header";
 import { IssueDetailsInfo } from "./issue-details-info";
-import { Issue } from "../../../models/issues.interface";
-import { useParams } from "react-router-dom";
-import { gql, useQuery } from "@apollo/client";
-import { issues } from "../../../apollo/queries";
-const ISSEUS = gql`
-  ${issues}
-`;
 const IssueDetails: React.FC<{
-  issueKey: string | null;
-  setIssueKey: React.Dispatch<React.SetStateAction<Issue["key"] | null>>;
-}> = ({ issueKey, setIssueKey }) => {
+  issue: Issue | null;
+  setIssue: React.Dispatch<React.SetStateAction<Issue | null>>;
+}> = ({ issue, setIssue }) => {
   const renderContainerRef = React.useRef<HTMLDivElement>(null);
-  const projectId = useParams().projectId;
-  const { data } = useQuery(ISSEUS, {
-    variables: { projectId: projectId },
-  });
-  const issues = data?.issues.data as Issue[];
-
-  const getIssue = useCallback(
-    (issueKey: string | null) => {
-      return issues?.find((issue) => issue.key === issueKey);
-    },
-    [issues]
-  );
-  const [issueInfo, setIssueInfo] = useState(() => getIssue(issueKey));
+  const [isInViewport, viewportRef] = useIsInViewport({ threshold: 1 });
 
   useEffect(() => {
-    setIssueInfo(() => getIssue(issueKey));
     if (renderContainerRef.current) {
       renderContainerRef.current.scrollTo({ top: 0, behavior: "smooth" });
     }
-  }, [issueKey, getIssue]);
+  }, [issue]);
 
-  if (!issueInfo || !issues) return <div />;
+  if (!issue) return <div />;
 
   return (
     <div
       ref={renderContainerRef}
-      data-state={issueKey ? "open" : "closed"}
+      data-state={issue ? "open" : "closed"}
       className="relative z-10 flex w-full flex-col overflow-y-auto pl-4 pr-2 [&[data-state=closed]]:hidden"
     >
       <IssueDetailsHeader
-        issue={issueInfo}
-        setIssueKey={setIssueKey}
+        issue={issue}
+        setIssue={setIssue}
         isInViewport={false}
       />
+      <IssueDetailsInfo issue={issue} ref={viewportRef} />
     </div>
   );
 };

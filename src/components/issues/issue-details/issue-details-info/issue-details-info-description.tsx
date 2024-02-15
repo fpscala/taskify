@@ -1,14 +1,11 @@
-import { Editor } from "@/components/text-editor/editor";
+import { Editor } from "../../../text-editor/editor";
 import { type SerializedEditorState } from "lexical";
-import { EditorPreview } from "@/components/text-editor/preview";
+import { EditorPreview } from "../../../text-editor/preview";
 import { Fragment, useState } from "react";
-import { type IssueType } from "@/utils/types";
-import { useIssues } from "@/hooks/query-hooks/use-issues";
-import { useIsAuthenticated } from "@/hooks/use-is-authed";
-const Description: React.FC<{ issue: IssueType }> = ({ issue }) => {
+import { Issue } from "../../../../models/issues.interface";
+const Description: React.FC<{ issue: Issue }> = ({ issue }) => {
   const [isEditing, setIsEditing] = useState(false);
-  const { updateIssue } = useIssues();
-  const [isAuthenticated, openAuthModal] = useIsAuthenticated();
+  // const { updateIssue } = useIssues();
 
   const [content, setContent] = useState<SerializedEditorState | undefined>(
     (issue.description
@@ -22,15 +19,11 @@ const Description: React.FC<{ issue: IssueType }> = ({ issue }) => {
   }
 
   function handleSave(state: SerializedEditorState | undefined) {
-    if (!isAuthenticated) {
-      openAuthModal();
-      return;
-    }
     setContent(state);
-    updateIssue({
-      issueId: issue.id,
-      description: state ? JSON.stringify(state) : undefined,
-    });
+    // updateIssue({
+    //   issueId: issue.id,
+    //   description: state ? JSON.stringify(state) : undefined,
+    // });
     setIsEditing(false);
   }
 

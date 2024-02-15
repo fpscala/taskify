@@ -10,9 +10,9 @@ import { Issue } from "../../../models/issues.interface";
 
 const IssueDetailsHeader: React.FC<{
   issue: Issue;
-  setIssueKey: React.Dispatch<React.SetStateAction<string | null>>;
+  setIssue: React.Dispatch<React.SetStateAction<Issue | null>>;
   isInViewport: boolean;
-}> = ({ issue, setIssueKey, isInViewport }) => {
+}> = ({ issue, setIssue, isInViewport }) => {
   if (!issue) return <div />;
   return (
     <div
@@ -49,7 +49,7 @@ const IssueDetailsHeader: React.FC<{
         <Button
           customColors
           className="bg-transparent hover:bg-gray-200"
-          onClick={() => setIssueKey(null)}
+          onClick={() => setIssue(null)}
         >
           <MdClose className="text-2xl" />
         </Button>

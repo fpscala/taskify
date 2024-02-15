@@ -17,7 +17,7 @@ export interface Issue {
   id: string;
   key: string;
   name: string;
-  createdAt: string;
+  createdAt: Date;
   status: IssueStatus;
   type: IssueType;
   creatorId: string;
@@ -28,7 +28,7 @@ export interface Issue {
   assigneeId?: string;
   parentId?: string;
   sprintId?: string;
-  updatedAt?: string;
+  updatedAt?: Date;
   deletedAt?: string;
   sprintColor?: string;
   assigner?: User

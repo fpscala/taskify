@@ -11,14 +11,14 @@ const Issue: React.FC<{ issue: JiraIssue; index: number }> = ({
   issue,
   index,
 }) => {
-  const { setIssueKey } = useSelectedIssueContext();
+  const { setIssue } = useSelectedIssueContext();
 
   return (
     <Draggable draggableId={issue.id} index={index}>
       {({ innerRef, dragHandleProps, draggableProps }, { isDragging }) => (
         <div
           role="button"
-          onClick={() => setIssueKey(issue.key)}
+          onClick={() => setIssue(issue)}
           ref={innerRef}
           {...draggableProps}
           {...dragHandleProps}
