@@ -4,10 +4,10 @@ import { FaCheck } from "react-icons/fa";
 import { HiLightningBolt } from "react-icons/hi";
 import clsx from "clsx";
 import { SubTaskIcon } from "../svgs";
-import { Issue, IssueType } from "../../models/issues.interface";
+import { IssueType } from "../../models/issues.interface";
 
 type IssueIconProps = {
-  issueType: Issue["type"];
+  issueType: IssueType;
 };
 
 const Icon: React.FC<{ children: ReactNode; className?: string }> = ({
@@ -23,7 +23,7 @@ const Icon: React.FC<{ children: ReactNode; className?: string }> = ({
 
 const _SubTaskIcon = () => {
   return (
-    <Icon className="bg-task h-fit">
+    <Icon className="h-fit bg-task">
       <SubTaskIcon className="text-white" />
     </Icon>
   );
@@ -31,7 +31,7 @@ const _SubTaskIcon = () => {
 
 const TaskIcon = () => {
   return (
-    <Icon className="bg-task h-fit">
+    <Icon className="h-fit bg-task">
       <FaCheck className=" p-0.5 text-white" />
     </Icon>
   );
@@ -39,7 +39,7 @@ const TaskIcon = () => {
 
 const StoryIcon = () => {
   return (
-    <Icon className="bg-story h-fit">
+    <Icon className="h-fit bg-story">
       <BsBookmarkFill className="p-0.5" />
     </Icon>
   );
@@ -47,7 +47,7 @@ const StoryIcon = () => {
 
 const BugIcon = () => {
   return (
-    <Icon className="bg-bug h-fit">
+    <Icon className="h-fit bg-bug">
       <BsFillRecordFill />
     </Icon>
   );
@@ -55,7 +55,7 @@ const BugIcon = () => {
 
 const EpicIcon = () => {
   return (
-    <Icon className="bg-epic h-fit">
+    <Icon className="h-fit bg-epic">
       <HiLightningBolt />
     </Icon>
   );

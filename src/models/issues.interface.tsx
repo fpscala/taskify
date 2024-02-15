@@ -1,3 +1,5 @@
+import { User } from "./users.interface";
+
 export enum IssueStatus {
   TODO = "Todo",
   IN_PROGRESS = "InProgress",
@@ -29,4 +31,5 @@ export interface Issue {
   updatedAt?: string;
   deletedAt?: string;
   sprintColor?: string;
+  assigner?: User
 }

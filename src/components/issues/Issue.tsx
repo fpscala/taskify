@@ -1,11 +1,12 @@
 import clsx from "clsx";
-import { createContext, useContext } from "react";
 import { Draggable } from "react-beautiful-dnd";
 import { BsThreeDots } from "react-icons/bs";
 import { Issue as JiraIssue } from "../../models/issues.interface";
 import { DropdownTrigger } from "../ui/dropdown-menu";
 import { IssueDropdownMenu } from "./issue-menu";
 import { useSelectedIssueContext } from "../context/use-selected-issue-context";
+import Avatar from "../util/Avatar";
+import { IssueIcon } from "./issue-icon";
 const Issue: React.FC<{ issue: JiraIssue; index: number }> = ({
   issue,
   index,
@@ -23,7 +24,7 @@ const Issue: React.FC<{ issue: JiraIssue; index: number }> = ({
           {...dragHandleProps}
           className={clsx(
             isDragging && "bg-white",
-            "block p-5 bg-white rounded-md shadow group my-0.5 max-w-full text-sm shadow-gray-300 hover:bg-gray-200 "
+            "group my-0.5 block max-w-full rounded-md bg-white p-5 text-sm shadow shadow-gray-300 hover:bg-gray-200 "
           )}
         >
           <div className="flex items-start justify-between">
@@ -46,16 +47,16 @@ const Issue: React.FC<{ issue: JiraIssue; index: number }> = ({
           </div>
           <div className="mt-3 flex items-center justify-between">
             <div className="flex items-center gap-x-3">
-              {/* <IssueIcon issueType={issue.type} /> */}
+              <IssueIcon issueType={issue.type} />
               <span className="text-xs font-medium text-gray-600">
                 {issue.key}
               </span>
             </div>
-            {/* <Avatar
-              // size={20}
-              src={issue.assigneeId?.avatar}
-              alt={issue.assignee?.name ?? "Unassigned"}
-            /> */}
+            {issue.assigner && (
+              <Avatar
+                name={issue.assigner?.firstname}
+              />
+            )}
           </div>
         </div>
       )}
