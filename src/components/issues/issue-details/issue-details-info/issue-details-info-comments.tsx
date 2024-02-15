@@ -8,13 +8,21 @@ import relativeTime from "dayjs/plugin/relativeTime";
 import { EditorPreview } from "../../../text-editor/preview";
 import { Button } from "../../../ui/button";
 import { Issue } from "../../../../models/issues.interface";
+import Avatar from "../../../util/Avatar";
+import { User } from "../../../../models/users.interface";
+import { gql, useQuery } from "@apollo/client";
+import { authed_user } from "../../../../apollo/queries";
 dayjs.extend(relativeTime);
-
+const AUTHED_USER = gql`
+  ${authed_user}
+`;
 const Comments: React.FC<{ issue: Issue }> = ({ issue }) => {
   const scrollRef = useRef(null);
   const [isWritingComment, setIsWritingComment] = useState(false);
   const [isInViewport, ref] = useIsInViewport();
   // const { comments, addComment } = useIssueDetails();
+  const { data } = useQuery(AUTHED_USER);
+  const authUser = data?.currentUser;
 
   useKeydownListener(scrollRef, ["m", "M"], handleEdit);
   function handleEdit(ref: React.RefObject<HTMLElement>) {
@@ -56,7 +64,7 @@ const Comments: React.FC<{ issue: Issue }> = ({ issue }) => {
           />
         ) : (
           <AddComment
-            // user={}
+            user={authUser}
             onAddComment={() => handleEdit(scrollRef)}
             commentsInViewport={isInViewport}
           />
@@ -69,9 +77,9 @@ const Comments: React.FC<{ issue: Issue }> = ({ issue }) => {
 
 const AddComment: React.FC<{
   onAddComment: () => void;
-  // user: UserResource | undefined | null;
+  user: User | undefined | null;
   commentsInViewport: boolean;
-}> = ({ onAddComment, /* user, */ commentsInViewport }) => {
+}> = ({ onAddComment, user, commentsInViewport }) => {
   function handleAddComment(event: React.MouseEvent<HTMLInputElement>) {
     event.preventDefault();
     onAddComment();
@@ -81,12 +89,12 @@ const AddComment: React.FC<{
       data-state={commentsInViewport ? "inViewport" : "notInViewport"}
       className="flex w-full gap-x-2 border-t-2 border-transparent py-3 [&[data-state=notInViewport]]:border-gray-200"
     >
-      {/* <Avatar
-        src={user?.profileImageUrl}
-        alt={
-          user ? `${user?.firstName ?? ""} ${user?.lastName ?? ""}` : "Guest"
+      <Avatar
+        src="https://images.unsplash.com/photo-1463453091185-61582044d556?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=3.5&w=144&h=144&q=80"
+        name={
+          user ? `${user?.firstname ?? ""} ${user?.firstname ?? ""}` : "Guest"
         }
-      /> */}
+      />
       <div className="w-full">
         <label htmlFor="add-comment" className="sr-only">
           Add Comment
