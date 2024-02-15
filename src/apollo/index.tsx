@@ -9,9 +9,14 @@ const REFRESH_TOKEN = gql`
   ${refreshToken}
 `;
 
-const uri = "http://localhost:8000/graphql";
+const GRAPHQL_URL = "http://localhost:8000/graphql";
 
-const httpLink = new HttpLink({ uri: uri });
+const httpLink = new HttpLink({
+  uri: (operation) =>
+    `${GRAPHQL_URL}?operation=${encodeURIComponent(
+      operation.operationName
+    )}`,
+});
 
 const authMiddleware = new ApolloLink((operation, forward) => {
   // add the authorization to the headers
@@ -44,7 +49,8 @@ function getNewToken(refreshToken: string) {
     .catch(() => {
       window.localStorage.removeItem("accessToken");
       window.localStorage.removeItem("refreshToken");
-      return (window.location.href = "/login");
+      window.location.href = "/login";
+      return;
     });
 }
 const errorLink = onError(
@@ -69,7 +75,7 @@ const errorLink = onError(
     }
     if (networkError) {
       // Check the status code of the network error
-      if (networkError.statusCode === 403 && refreshToken) {
+      if (networkError?.statusCode === 403 && refreshToken) {
         return refetchToken(refreshToken);
       } else {
         window.localStorage.removeItem("accessToken");
@@ -83,11 +89,6 @@ const errorLink = onError(
         // Check for a 403 error
         if (extensions.errorCode === "VALIDATION_ERROR" && refreshToken) {
           return refetchToken(refreshToken);
-        } else {
-          window.localStorage.removeItem("accessToken");
-          window.localStorage.removeItem("refreshToken");
-          window.location.href = "/login";
-          return;
         }
       });
     }

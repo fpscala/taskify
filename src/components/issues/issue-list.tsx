@@ -99,6 +99,7 @@ const IssueList: React.FC<{
               onCreate={({ name, type }) => handleCreateIssue(name, type)}
               onCancel={() => setIsEditing(false)}
               isCreating={isCreating}
+              id={droppableProps["data-rbd-droppable-id"]}
             />
             {placeholder}
           </div>

@@ -27,7 +27,7 @@ import {
   moveItemWithinArray,
 } from "../util/helpers";
 import { updateIssue } from "../../apollo/mutations";
-import { IssueMetaInfo } from "../issues/issue-details/issue-details-info/issue-details-info-meta";
+import toast from "react-hot-toast";
 
 const STATUSES: IssueStatus[] = [
   IssueStatus.TODO,
@@ -72,7 +72,7 @@ const Board: React.FC<{ project: Project }> = ({ project }) => {
   useEffect(() => {
     setIssues(issues);
   }, [issues]);
-  const [updateIssue] = useMutation(UPDATE_ISSUE);
+  const [updateIssue, { error: isUpdateFailed }] = useMutation(UPDATE_ISSUE);
 
   if (!issues || !project || !projectId) {
     return null;
@@ -83,7 +83,7 @@ const Board: React.FC<{ project: Project }> = ({ project }) => {
     if (isNullish(destination) || isNullish(source)) return;
     setIssues((issues) => {
       return issues.map((issue) => {
-        if (issue.id === result.draggableId) {
+        if (isUpdateFailed && issue.id === result.draggableId) {
           return {
             ...issue,
             id: result.draggableId,
@@ -109,6 +109,9 @@ const Board: React.FC<{ project: Project }> = ({ project }) => {
           source,
           droppedIssueId: result.draggableId,
         }),
+      },
+      onError(error) {
+        toast(error.message);
       },
     });
   };

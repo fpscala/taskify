@@ -35,7 +35,7 @@ const Project: React.FC<Props> = ({ theme, toggleTheme }) => {
         <div className="border-b-2 border-gray-200">
           <header className="px-6">
             <div className="flex items-center justify-between border-b border-gray-200 py-3">
-              <button onClick={toggleSidebar} className="text-gray-600">
+              <button onClick={toggleSidebar} className="text-gray-600 hidden">
                 <svg
                   className="h-6 w-6"
                   fill="none"

@@ -9,10 +9,11 @@ import { IssueIcon } from "./issue-icon";
 import { Issue, IssueType } from "../../models/issues.interface";
 
 const EmtpyIssue: React.FC<{
+  id: string;
   className?: string;
   onCreate: (payload: {
     name: string;
-    type: Issue["type"];
+    type: IssueType;
     parentId: Issue["id"] | null;
   }) => void;
   onCancel: () => void;
@@ -21,6 +22,7 @@ const EmtpyIssue: React.FC<{
   isEpic?: boolean;
   parentId?: Issue["id"];
 }> = ({
+  id,
   onCreate,
   onCancel,
   isCreating,
@@ -31,7 +33,7 @@ const EmtpyIssue: React.FC<{
   ...props
 }) => {
   const [name, setName] = useState("");
-  const [type, setType] = useState<Issue["type"]>(() => initialType());
+  const [type, setType] = useState<IssueType>(() => initialType());
   const inputRef = useRef<HTMLInputElement>(null);
 
   function initialType() {
@@ -85,14 +87,14 @@ const EmtpyIssue: React.FC<{
           onSelect={handleSelect}
         />
       )}
-      <label htmlFor="empty-issue-input" className="sr-only">
+      <label htmlFor={`empty-issue-input-${id}`} className="sr-only">
         Empty issue input
       </label>
       <input
         ref={inputRef}
         autoFocus
         type="text"
-        id="empty-issue-input"
+        id={`empty-issue-input-${id}`}
         placeholder="What needs to be done?"
         className=" w-full pl-2 pr-20 text-sm focus:outline-none"
         value={name}
