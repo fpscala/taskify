@@ -9,8 +9,19 @@ import { gql, useMutation } from "@apollo/client";
 const LOGIN = gql`
   ${login}
 `;
+const UPDATE_USER = gql`
+  mutation (
+    $firstname: String!
+    $lastname: String!
+    $upload: Upload
+  ) {
+    updateUser(firstname: $firstname, lastname: $lastname, upload: $upload)
+  }
+`;
 const Login = () => {
   const [isVisible, setVisiblity] = useState(false);
+  const [mutate] = useMutation(UPDATE_USER);
+
   const [loginRequest] = useMutation(LOGIN);
   const { register, handleSubmit } = useForm();
   const navigate = useNavigate();
@@ -37,6 +48,25 @@ const Login = () => {
               </div>
             </div>
           </Link>
+          <input
+            type="file"
+            required
+            onChange={({
+              target: {
+                validity,
+                files: [file],
+              },
+            }) => {
+              if (validity.valid)
+                mutate({
+                  variables: {
+                    firstname: "Maftunbek",
+                    lastname: "Raxmatov",
+                    upload: file,
+                  },
+                });
+            }}
+          />
           <div className="relative z-[1] mt-5 sm:mt-5">
             <svg
               viewBox="0 0 1090 1090"

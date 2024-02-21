@@ -1,36 +1,36 @@
-import { ApolloLink, concat, fromPromise } from "apollo-link";
+import { ApolloLink, concat, fromPromise, split } from "apollo-link";
 import { ApolloClient, InMemoryCache } from "@apollo/client";
 import { HttpLink } from "apollo-link-http";
-import { onError } from "apollo-link-error";
 import { gql } from "@apollo/client";
 import { refreshToken } from "../apollo/mutations";
+import { setContext } from "@apollo/client/link/context";
+import { onError } from "@apollo/client/link/error";
+
+import createUploadLink from "apollo-upload-client/createUploadLink.mjs";
 
 const REFRESH_TOKEN = gql`
   ${refreshToken}
 `;
 
-const GRAPHQL_URL = "http://localhost:8000/graphql";
-
-const httpLink = new HttpLink({
-  uri: (operation) =>
-    `${GRAPHQL_URL}?operation=${encodeURIComponent(
-      operation.operationName
-    )}`,
-});
-
-const authMiddleware = new ApolloLink((operation, forward) => {
-  // add the authorization to the headers
+const GRAPHQL_URL = "http://localhost/api/v1/graphql";
+const authMiddleware = setContext((request) => {
   const accessToken = window.localStorage.getItem("accessToken");
-  operation.setContext({
+  return {
     headers: {
       authorization:
-        !operation.operationName.includes("Login") && accessToken
+        !request.operationName?.includes("Login") && accessToken
           ? `Bearer ${accessToken}`
           : "",
     },
-  });
-  return forward(operation);
+  };
 });
+
+const httpLink = createUploadLink({
+  uri: (operation) =>
+    `${GRAPHQL_URL}?operation=${encodeURIComponent(operation.operationName)}`,
+  credentials: "include",
+});
+
 function getNewToken(refreshToken: string) {
   // Assuming you have defined the REFRESH_TOKEN_MUTATION somewhere
   return refreshApolloClient
@@ -53,6 +53,16 @@ function getNewToken(refreshToken: string) {
       return;
     });
 }
+const resetToken = onError(({ networkError }) => {
+  if (
+    networkError &&
+    networkError.name === "ServerError" &&
+    networkError.statusCode === 401
+  ) {
+    // remove cached token on 401 from the server
+    token = null;
+  }
+});
 const errorLink = onError(
   ({ graphQLErrors, networkError, operation, forward }) => {
     const refreshToken = window.localStorage.getItem("refreshToken");
@@ -96,13 +106,14 @@ const errorLink = onError(
 );
 
 const refreshApolloClient = new ApolloClient({
-  link: ApolloLink.from([httpLink]),
+  link: httpLink,
   cache: new InMemoryCache(),
 });
 
 const setupApollo = () => {
   const client = new ApolloClient({
-    link: concat(authMiddleware, ApolloLink.from([errorLink, httpLink])),
+    credentials: "include",
+    link: errorLink.concat(authMiddleware.concat(httpLink)),
     cache: new InMemoryCache(),
   });
 

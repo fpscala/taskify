@@ -1,6 +1,6 @@
 import { useParams } from "react-router-dom";
 
-import { useQuery } from "@apollo/client";
+import { useQuery, useMutation } from "@apollo/client";
 import gql from "graphql-tag";
 import { findProject } from "../../apollo/queries";
 import { Board } from "./Board";
@@ -9,8 +9,19 @@ import { Theme } from "../../utils";
 import { useState } from "react";
 import Sidebar from "../sidebar";
 import Breadcrumbs from "../home/Breadcrumbs";
+import Avatar from "../util/Avatar";
 const FIND_PROJECT = gql`
   ${findProject}
+`;
+
+const UPDATE_USER = gql`
+  mutation UpdateUser(
+    $firstname: String!
+    $lastname: String!
+    $upload: Upload
+  ) {
+    updateUser(firstname: $firstname, lastname: $lastname, upload: $upload)
+  }
 `;
 interface Props {
   theme: Theme;
@@ -18,6 +29,7 @@ interface Props {
 }
 const Project: React.FC<Props> = ({ theme, toggleTheme }) => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [mutate] = useMutation(UPDATE_USER);
 
   const projectId = useParams().projectId;
   const { data } = useQuery(FIND_PROJECT, {
@@ -35,7 +47,7 @@ const Project: React.FC<Props> = ({ theme, toggleTheme }) => {
         <div className="border-b-2 border-gray-200">
           <header className="px-6">
             <div className="flex items-center justify-between border-b border-gray-200 py-3">
-              <button onClick={toggleSidebar} className="text-gray-600 hidden">
+              <button onClick={toggleSidebar} className="hidden text-gray-600">
                 <svg
                   className="h-6 w-6"
                   fill="none"
@@ -113,7 +125,31 @@ const Project: React.FC<Props> = ({ theme, toggleTheme }) => {
                   {project.key + " board"}
                 </h2>
                 <div className="ml-6 flex items-center">
-                  {/* <Avatar users={users} /> */}
+                  <Avatar
+                    name="user"
+                    src="https://images.unsplash.com/photo-1463453091185-61582044d556?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=3.5&w=144&h=144&q=8"
+                  />
+                </div>
+                <div className="ml-6 flex items-center">
+                  <input
+                    type="file"
+                    required
+                    onChange={({
+                      target: {
+                        validity,
+                        files: [file],
+                      },
+                    }) => {
+                      if (validity.valid)
+                        mutate({
+                          variables: {
+                            firstname: "Maftunbek",
+                            lastname: "Raxmatov",
+                            upload: file,
+                          },
+                        });
+                    }}
+                  />
                 </div>
               </div>
               <div className="flex items-center">
