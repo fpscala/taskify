@@ -34,6 +34,10 @@ export const issues = `query FetchIssues($userId:ID, $projectId:ID, $sprintId:ID
       status
       boardPosition
       sprintPosition
+      assigner {
+        id
+        firstname
+      }
     }
   }
 }`;
@@ -50,5 +54,9 @@ export const findIssue = `query FindIssue($issueId:ID!) {
     status
     boardPosition
     sprintPosition
+    assigner {
+      id
+      firstname
+    }
   }
 }`;

@@ -5,7 +5,7 @@ import { Issue as JiraIssue } from "../../models/issues.interface";
 import { DropdownTrigger } from "../ui/dropdown-menu";
 import { IssueDropdownMenu } from "./issue-menu";
 import { useSelectedIssueContext } from "../context/use-selected-issue-context";
-import Avatar from "../util/Avatar";
+import { Avatar } from "../util/Avatar";
 import { IssueIcon } from "./issue-icon";
 const Issue: React.FC<{ issue: JiraIssue; index: number }> = ({
   issue,
@@ -52,11 +52,7 @@ const Issue: React.FC<{ issue: JiraIssue; index: number }> = ({
                 {issue.key}
               </span>
             </div>
-            {issue.assigner && (
-              <Avatar
-                name={issue.assigner?.firstname}
-              />
-            )}
+            {issue.assigner && <Avatar src={"https://images.unsplash.com/photo-1463453091185-61582044d556?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=3.5&w=144&h=144&q=80"} alt={issue.assigner?.firstname} />}
           </div>
         </div>
       )}

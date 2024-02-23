@@ -8,7 +8,7 @@ import relativeTime from "dayjs/plugin/relativeTime";
 import { EditorPreview } from "../../../text-editor/preview";
 import { Button } from "../../../ui/button";
 import { Issue } from "../../../../models/issues.interface";
-import Avatar from "../../../util/Avatar";
+import { Avatar } from "../../../util/Avatar";
 import { User } from "../../../../models/users.interface";
 import { gql, useQuery } from "@apollo/client";
 import { authed_user } from "../../../../apollo/queries";
@@ -91,8 +91,8 @@ const AddComment: React.FC<{
     >
       <Avatar
         src="https://images.unsplash.com/photo-1463453091185-61582044d556?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=3.5&w=144&h=144&q=80"
-        name={
-          user ? `${user?.firstname ?? ""} ${user?.firstname ?? ""}` : "Guest"
+        alt={
+          user ? `${user?.firstname ?? ""} ${user?.lastname ?? ""}` : "Guest"
         }
       />
       <div className="w-full">

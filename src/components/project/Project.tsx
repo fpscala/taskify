@@ -9,7 +9,7 @@ import { Theme } from "../../utils";
 import { useState } from "react";
 import Sidebar from "../sidebar";
 import Breadcrumbs from "../home/Breadcrumbs";
-import Avatar from "../util/Avatar";
+import { Avatar } from "../util/Avatar";
 const FIND_PROJECT = gql`
   ${findProject}
 `;
@@ -126,7 +126,7 @@ const Project: React.FC<Props> = ({ theme, toggleTheme }) => {
                 </h2>
                 <div className="ml-6 flex items-center">
                   <Avatar
-                    name="user"
+                    alt="user"
                     src="https://images.unsplash.com/photo-1463453091185-61582044d556?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=3.5&w=144&h=144&q=8"
                   />
                 </div>

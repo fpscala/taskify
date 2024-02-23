@@ -1,26 +1,29 @@
-interface Props {
-  src?: string;
-  name: string;
-  title?: string;
-  className?: string;
-  onClick?: () => void;
-  style?: {};
-}
-
-function Avatar(props: Props) {
-  const { src, name, title, className, onClick, style } = props;
+import { TooltipWrapper } from "../ui/tooltip";
+import { UnassignedUser } from "../svgs";
+type AvatarProps = {
+  src: string | null | undefined;
+  alt: string;
+  size?: number;
+};
+const Avatar = ({ src, alt, size = 8, ...props }: AvatarProps) => {
   return (
-    <div
-      className={`relative grid shrink-0 cursor-pointer place-items-center overflow-hidden rounded-full bg-green-600 ${
-        className ?? 'h-8 w-8 border-[1px]'
-      }`}
-      title={title ?? name}
-      {...{ style, onClick }}
-    >
-      <div>{name.at(0)}</div>
-      {src && <img src={src} alt={name} className='absolute block h-full w-full object-cover' />}
-    </div>
+    <TooltipWrapper text={alt}>
+      {src ? (
+        <img
+          src={src}
+          alt={alt}
+          className={`rounded-full h-${size} w-${size}`}
+        />
+      ) : (
+        <div>
+          <UnassignedUser
+            size={size}
+            className="h-fit w-fit rounded-full bg-gray-200 text-gray-500"
+          />
+        </div>
+      )}
+    </TooltipWrapper>
   );
-}
+};
 
-export default Avatar;
+export { Avatar };

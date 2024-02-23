@@ -8,23 +8,37 @@ import {
   AccordionTrigger,
 } from "../../../ui/accordion";
 // import { IssueAssigneeSelect } from "../../issue-select-assignee";
-import Avatar from "../../../util/Avatar";
+import { Avatar } from "../../../util/Avatar";
 import { Issue } from "../../../../models/issues.interface";
+import { gql, useMutation, useQuery } from "@apollo/client";
+import { assignIssue } from "../../../../apollo/mutations";
+import { authed_user } from "../../../../apollo/queries";
+import { User } from "../../../../models/users.interface";
+import toast from "react-hot-toast";
+import { IssueAssigneeSelect } from "../../issue-select-assignee";
+const ASSIGN_ISSUE = gql`
+  ${assignIssue}
+`;
+const AUTHED_USER = gql`
+  ${authed_user}
+`;
 
-const IssueDetailsInfoAccordion: React.FC<{ issue: Issue }> = ({
-  issue,
-}) => {
-  // const { updateIssue } = useIssues();
+const IssueDetailsInfoAccordion: React.FC<{ issue: Issue }> = ({ issue }) => {
   // const { sprints } = useSprints();
   const [openAccordion, setOpenAccordion] = useState("details");
-
+  const [assignIssue] = useMutation(ASSIGN_ISSUE);
+  const { data } = useQuery(AUTHED_USER);
+  const authUser = data?.currentUser as User;
   function handleAutoAssign() {
-
-    // updateIssue({
-    //   issueId: issue.id,
-    //   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    //   assigneeId: "", // TODO userId,
-    // });
+    assignIssue({
+      variables: {
+        issueId: issue.id,
+        userId: authUser.id, // TODO userId,
+      },
+      onError(error) {
+        toast(error.message);
+      },
+    });
   }
   return (
     <Accordion
@@ -56,7 +70,7 @@ const IssueDetailsInfoAccordion: React.FC<{ issue: Issue }> = ({
               Assignee
             </span>
             <div className="flex flex-col">
-              {/* <IssueAssigneeSelect issue={issue} /> */}
+              <IssueAssigneeSelect issue={issue} />
               <Button
                 onClick={handleAutoAssign}
                 data-state={issue.assigner ? "assigned" : "unassigned"}
@@ -72,8 +86,10 @@ const IssueDetailsInfoAccordion: React.FC<{ issue: Issue }> = ({
             <span className="text-sm font-semibold text-gray-600">Sprint</span>
             <div className="flex items-center">
               <span className="text-sm text-gray-700">
-                {/* sprints?.find((sprint) => sprint?.id == issue.sprintId)
-                  ?.name ??  */"None"}
+                {
+                  /* sprints?.find((sprint) => sprint?.id == issue.sprintId)
+                  ?.name ??  */ "None"
+                }
               </span>
             </div>
           </div>

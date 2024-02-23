@@ -81,9 +81,10 @@ const Board: React.FC<{ project: Project }> = ({ project }) => {
   const onDragEnd = (result: DropResult) => {
     const { destination, source } = result;
     if (isNullish(destination) || isNullish(source)) return;
+    const initialIssues = [...issues];
     setIssues((issues) => {
       return issues.map((issue) => {
-        if (isUpdateFailed && issue.id === result.draggableId) {
+        if (issue.id === result.draggableId) {
           return {
             ...issue,
             id: result.draggableId,
@@ -111,6 +112,7 @@ const Board: React.FC<{ project: Project }> = ({ project }) => {
         }),
       },
       onError(error) {
+        setIssues(initialIssues)
         toast(error.message);
       },
     });
