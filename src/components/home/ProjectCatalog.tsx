@@ -4,13 +4,10 @@ import gql from "graphql-tag";
 import SS from "../util/SpinningCircle";
 import CreateProjectModel from "./CreateProjectModel";
 import ProjectRow from "./ProjectRow";
-import { authed_user, projects } from "../../apollo/queries";
+import { projects } from "../../apollo/queries";
 import { useQuery } from "@apollo/client";
 import { Project } from "../../models/projects.interface";
 
-const AUTHED_USER = gql`
-  ${authed_user}
-`;
 const PROJECTS = gql`
   ${projects}
 `;

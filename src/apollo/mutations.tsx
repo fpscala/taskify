@@ -1,11 +1,10 @@
-export const createProject = `mutation CreatProject($name:String!){
-  createProject(name:$name)
+export const createProject = `mutation CreatProject($name:String!, $key:String!){
+  createProject(name: $name, key: $key)
 }`;
 
 export const updateIssue = `mutation UpdateIssue($id: ID!, $status: IssueStatus!, $boardPosition: Float!) {
   updateIssue(id: $id, status: $status, boardPosition: $boardPosition)
 }`;
-
 
 export const assignIssue = `mutation AssignIssue($issueId: ID!, $userId: ID!) {
   assignIssue(issueId: $issueId, userId: $userId)

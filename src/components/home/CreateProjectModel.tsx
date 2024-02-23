@@ -45,14 +45,14 @@ const CreateProjectModel = (props: Props) => {
     >
       <>
         <div className="mb-8">
-          <span className="text-[22px] font-[600] text-c-text">
+          <span className="text-c-text text-[22px] font-[600]">
             Create Project
           </span>
         </div>
         <div className="flex flex-col gap-4">
           <InputWithValidation
             label="Project name"
-            placeholder="name of your project"
+            placeholder="Name of your project"
             register={register("name", {
               required: {
                 value: true,
@@ -62,24 +62,19 @@ const CreateProjectModel = (props: Props) => {
             error={errors.name as FieldError}
             autoFocus
           />
+          <InputWithValidation
+            label="Project short name"
+            placeholder="Short name of your project"
+            register={register("key", {
+              required: {
+                value: true,
+                message: "Project short name must not be empty",
+              },
+            })}
+            error={errors.name as FieldError}
+            autoFocus
+          />
         </div>
-        {authUser && (
-          <WithLabel label="Members">
-            <>
-              <div className="mb-2 rounded-sm border-[1px] border-gray-300 bg-slate-100 py-1 px-3 text-sm text-c-text">
-                <Item
-                  text={authUser.username}
-                  icon={authUser.profileUrl}
-                  size="h-6 w-6"
-                  variant="ROUND"
-                />
-              </div>
-              <span className="text-sm text-c-text">
-                * you can add more members after creating the project *
-              </span>
-            </>
-          </WithLabel>
-        )}
       </>
     </Model>
   );
