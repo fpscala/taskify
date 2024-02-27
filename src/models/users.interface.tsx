@@ -8,6 +8,13 @@ export enum Privilege {
   UpdateTask,
 }
 
+export interface Asset {
+  contentType?: string;
+  extension: string;
+  filename?: string;
+  url?: string;
+}
+
 export interface User {
   createdAt: string;
   email: string;
@@ -15,4 +22,5 @@ export interface User {
   id: string;
   lastname: string;
   privileges: Privilege[];
+  image?: Asset;
 }

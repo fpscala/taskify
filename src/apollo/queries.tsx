@@ -37,6 +37,9 @@ export const issues = `query FetchIssues($userId:ID, $projectId:ID, $sprintId:ID
       assigner {
         id
         firstname
+        image {
+          url
+        }
       }
     }
   }
@@ -57,6 +60,9 @@ export const findIssue = `query FindIssue($issueId:ID!) {
     assigner {
       id
       firstname
+      image {
+        url
+      }
     }
   }
 }`;
