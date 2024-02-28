@@ -2,7 +2,7 @@ import { useParams } from "react-router-dom";
 
 import { useQuery, useMutation } from "@apollo/client";
 import gql from "graphql-tag";
-import { findProject } from "../../apollo/queries";
+import { authed_user, findProject } from "../../apollo/queries";
 import { Board } from "./Board";
 import { SelectedIssueProvider } from "../context/use-selected-issue-context";
 import { Theme } from "../../utils";
@@ -10,6 +10,7 @@ import { useState } from "react";
 import Sidebar from "../sidebar";
 import Breadcrumbs from "../home/Breadcrumbs";
 import { Avatar } from "../util/Avatar";
+import { User } from "../../models/users.interface";
 const FIND_PROJECT = gql`
   ${findProject}
 `;
@@ -23,6 +24,10 @@ const UPDATE_USER = gql`
     updateUser(firstname: $firstname, lastname: $lastname, upload: $upload)
   }
 `;
+
+const AUTHED_USER = gql`
+  ${authed_user}
+`;
 interface Props {
   theme: Theme;
   toggleTheme: () => void;
@@ -30,7 +35,8 @@ interface Props {
 const Project: React.FC<Props> = ({ theme, toggleTheme }) => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [mutate] = useMutation(UPDATE_USER);
-
+  const { data: authedUserData } = useQuery(AUTHED_USER);
+  const authUser = authedUserData?.currentUser as User;
   const projectId = useParams().projectId;
   const { data } = useQuery(FIND_PROJECT, {
     variables: { projectId: projectId },
@@ -112,7 +118,7 @@ const Project: React.FC<Props> = ({ theme, toggleTheme }) => {
                 <button className="ml-6">
                   <img
                     className="h-9 w-9 rounded-full object-cover"
-                    src="https://images.unsplash.com/photo-1463453091185-61582044d556?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=3.5&w=144&h=144&q=80"
+                    src={authUser.image?.url}
                     alt="man smiling"
                   />
                 </button>
@@ -127,7 +133,7 @@ const Project: React.FC<Props> = ({ theme, toggleTheme }) => {
                 <div className="ml-6 flex items-center">
                   <Avatar
                     alt="user"
-                    src="https://images.unsplash.com/photo-1463453091185-61582044d556?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=3.5&w=144&h=144&q=8"
+                    src={authUser.image?.url}
                   />
                 </div>
                 <div className="ml-6 flex items-center">

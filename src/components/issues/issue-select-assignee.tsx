@@ -65,7 +65,7 @@ const IssueAssigneeSelect: React.FC<{
           <Fragment>
             <Avatar
               size={avatarSize}
-              src={"https://images.unsplash.com/photo-1463453091185-61582044d556?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=3.5&w=144&h=144&q=80"}
+              src={issue.assigner?.image?.url}
               alt={`${issue.assigner?.firstname ?? "Unassigned"}`}
             />
             {avatarOnly ? null : (

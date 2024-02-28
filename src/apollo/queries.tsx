@@ -1,7 +1,29 @@
+const userData = `
+  id
+  firstname
+  image {
+    url
+  }
+`
+const issueData = `
+  id
+  name
+  key
+  type
+  createdAt
+  updatedAt
+  description
+  status
+  boardPosition
+  sprintPosition
+  assigner {
+    ${userData}
+  }
+`
+
 export const authed_user = `query AuthedUser {
   currentUser {
-    id
-    firstname
+    ${userData}
     privileges
     email
   }
@@ -24,45 +46,13 @@ export const findProject = `query FindProjects($projectId:ID!) {
 export const issues = `query FetchIssues($userId:ID, $projectId:ID, $sprintId:ID) {
   issues(userId:$userId, projectId:$projectId, sprintId:$sprintId) {
     data {
-      id
-      name
-      key
-      type
-      createdAt
-      updatedAt
-      description
-      status
-      boardPosition
-      sprintPosition
-      assigner {
-        id
-        firstname
-        image {
-          url
-        }
-      }
+      ${issueData}
     }
   }
 }`;
 
 export const findIssue = `query FindIssue($issueId:ID!) {
   findIssue(value:$issueId) {
-    id
-    name
-    key
-    type
-    createdAt
-    updatedAt
-    description
-    status
-    boardPosition
-    sprintPosition
-    assigner {
-      id
-      firstname
-      image {
-        url
-      }
-    }
+    ${issueData}
   }
 }`;
