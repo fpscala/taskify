@@ -1,5 +1,5 @@
 import { ApolloLink, concat, fromPromise, split } from "apollo-link";
-import { ApolloClient, InMemoryCache } from "@apollo/client";
+import { ApolloClient, InMemoryCache, ServerError } from "@apollo/client";
 import { HttpLink } from "apollo-link-http";
 import { gql } from "@apollo/client";
 import { refreshToken } from "../apollo/mutations";

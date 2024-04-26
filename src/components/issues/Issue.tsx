@@ -1,8 +1,8 @@
 import clsx from "clsx";
 import { Draggable } from "react-beautiful-dnd";
 import { BsThreeDots } from "react-icons/bs";
-import { Issue as JiraIssue } from "../../models/issues.interface";
-import { DropdownTrigger } from "../ui/dropdown-menu";
+import { Issue as JiraIssue } from "@/models/issues.interface";
+import { DropdownTrigger } from "@/components/ui/dropdown-menu";
 import { IssueDropdownMenu } from "./issue-menu";
 import { useSelectedIssueContext } from "../context/use-selected-issue-context";
 import { Avatar } from "../util/Avatar";
